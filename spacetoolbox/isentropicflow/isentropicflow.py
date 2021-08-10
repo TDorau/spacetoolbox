@@ -17,6 +17,8 @@ def pressure_to_pressure_total_from_mach(mach, gamma):
         Pressure ratio   
 
     """
-    pressure_to_pressure_total = (1 + ((gamma - 1) / 2) * mach ** (-gamma / (gamma - 1))
+    pressure_to_pressure_total = (1 + ((gamma - 1) / 2) * mach**2) ** (-gamma /
+                                 (gamma - 1))
 
     return pressure_to_pressure_total
+
