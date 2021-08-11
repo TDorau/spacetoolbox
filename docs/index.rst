@@ -8,9 +8,15 @@ Welcome to spacetoolbox's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User Guide
+   
+   install
+   support
 
-
+.. toctree::
+   :caption: Programmer documentation
+   
+   api
 
 Indices and tables
 ==================

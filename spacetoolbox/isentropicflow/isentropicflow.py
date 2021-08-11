@@ -21,4 +21,3 @@ def pressure_to_pressure_total_from_mach(mach, gamma):
                                  (gamma - 1))
 
     return pressure_to_pressure_total
-
