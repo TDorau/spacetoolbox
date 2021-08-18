@@ -3,10 +3,10 @@ Spacetoolbox programmer documentation
 
 This is an infopage ...
 
-isentropicflow.isentropicflow
+isentropicflow.from_mach
 -----------------------------
 
-.. automodule:: isentropicflow.isentropicflow
+.. automodule:: isentropicflow.from_mach
    :members:
 
 isentropicflow.helper
