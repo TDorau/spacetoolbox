@@ -16,7 +16,8 @@ Welcome to spacetoolbox's documentation!
 .. toctree::
    :caption: Programmer documentation
    
-   api
+   isentropicflow
+   thrustchamber
 
 Indices and tables
 ==================

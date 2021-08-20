@@ -1,4 +1,4 @@
-Spacetoolbox programmer documentation
+Isentropic flow package documentation
 =====================================
 
 This is an infopage ...
@@ -11,5 +11,3 @@ isentropicflow.from_mach
 
 isentropicflow.helper
 ---------------------
-
-
