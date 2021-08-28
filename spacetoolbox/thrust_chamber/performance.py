@@ -1,8 +1,7 @@
 import math
 
 def ideal_thrust_coefficient(gamma, pressure_total, area_ratio, pressure_exit, pressure_atmos):
-    r"""Calculates the thrust coefficient as a function of heat capacity ratio, total pressure, area ratio and 
-        exit pressure
+    r"""Calculates the ideal thrust coefficient
 
     .. math::
         C_F =  \sqrt{\frac{2\gamma^2}{\gamma-1}\left(\frac{2}{\gamma+1}\right)^{\frac{\gamma+1}{\gamma-1}}
