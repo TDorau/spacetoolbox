@@ -41,17 +41,29 @@ def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i,
                     * radius_throat / math.tan(15 * math.pi / 180)
 
     angle_fc =  -(math.pi + (45 * math.pi / 180))
-    N_STEPS_FC = 100
+    N_STEPS_FC = 300
     step_fc = (-math.pi / 2 - angle_fc) / N_STEPS_FC
-    theta_fc = np.arange(-3 / 4 * math.pi, -math.pi / 2 + step_fc, step_fc)
+    theta_fc = np.arange(-3 / 4 * math.pi, -math.pi / 2 + 0.001, step_fc)
 
     x_fc = np.cos(theta_fc) * 1.5 * radius_throat
     y_fc = np.sin(theta_fc) * 1.5 * radius_throat + (1.5 * radius_throat
            + radius_throat)
 
-    np.savetext('firstCurve.csv', (x_fc, y_fc), delimiter=";")
+    np.savetxt('firstCurve.csv', (x_fc, y_fc), delimiter=";")
+
+    # Second curve (sc)
+    angle_sc = -math.pi / 2
+    N_STEPS_SC = 300
+    step_sc = theta_i / N_STEPS_SC
+    theta_sc = np.arange(angle_sc, theta_i - math.pi / 2 + step_sc, step_sc)
+
+    x_sc = np.cos(theta_sc) * 0.382 * radius_throat
+    y_sc = np.sin(theta_sc) * 0.382 * radius_throat + (0.382 * radius_throat
+           + radius_throat)
+
+    np.savetxt('secondCurve.csv', (x_sc, y_sc), delimiter=";")
                                 
-    return y_fc
+    return x_fc
 
 
 # Verification: Sutton Table 3-4 "Data on Several Bell-Shaped nozzles"
@@ -64,7 +76,8 @@ theta_i = 50 * math.pi / 180
 percent_length_conical = 0.8
 
 print(rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i, 
-                                   theta_exit, 
-                                   percent_length_conical))
+                                     theta_exit, 
+                                     percent_length_conical))
+
 
 
