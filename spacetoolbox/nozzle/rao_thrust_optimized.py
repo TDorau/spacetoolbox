@@ -64,19 +64,30 @@ def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i,
     np.savetxt('secondCurve.csv', (x_sc, y_sc), delimiter=";")
 
     # Third curve (dc)
-    x_tc = math.cos(theta_i - math.pi / 2) * 0.382 * radius_throat
-    y_tc = math.sin(theta_i - math.pi / 2) * 0.382 * radius_throat \
+    x_sc_endpoint = math.cos(theta_i - math.pi / 2) * 0.382 * radius_throat
+    y_sc_endpoint = math.sin(theta_i - math.pi / 2) * 0.382 * radius_throat \
            + (0.382 * radius_throat + radius_throat)
 
     y_exit = math.sqrt(area_ratio) * radius_throat
 
-    matrix_y = np.array([[y_tc ** 2, y_tc, 1], [y_exit ** 2, y_exit, 1],
-                         [2 * y_tc, 1, 0]])
-    matrix_x = np.array([x_tc, length_nozzle, 1 / math.tan(theta_i)])
+    matrix_y = np.array([[y_sc_endpoint ** 2, y_sc_endpoint, 1], 
+                         [y_exit ** 2, y_exit, 1],
+                         [2 * y_sc_endpoint, 1, 0]])
+    matrix_x = np.array([x_sc_endpoint, length_nozzle, 1 / math.tan(theta_i)])
     inverse_matrix_y = np.linalg.inv(matrix_y)
-    parabola_coefficients = matrix_y.dot(matrix_x) 
+    parabola_coefficients = inverse_matrix_y.dot(matrix_x) 
 
-    return parabola_coefficients
+    coefficient_a = parabola_coefficients[0]
+    coefficient_b = parabola_coefficients[1]
+    coefficient_c = parabola_coefficients[2]
+
+    STEPSIZE_Y_TC = 0.001
+    y_tc = np.arange(y_sc_endpoint, y_exit + STEPSIZE_Y_TC, STEPSIZE_Y_TC)
+    x_tc = coefficient_a * y_tc**2 + coefficient_b * y_tc + coefficient_c
+
+    np.savetxt('thirdCurve.csv', (x_tc, y_tc), delimiter=";")
+
+    return x_tc
 
 
 # Verification: Sutton Table 3-4 "Data on Several Bell-Shaped nozzles"
