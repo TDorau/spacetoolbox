@@ -87,21 +87,31 @@ def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i,
 
     np.savetxt('thirdCurve.csv', (x_tc, y_tc), delimiter=";")
 
-    return x_tc
+    x_nozzle= np.concatenate((x_fc,x_sc, x_tc),axis=0)
+    y_nozzle = np.concatenate((y_fc,y_sc, y_tc),axis=0)
+
+    np.savetxt('rao_thrust_optimized_parabola.csv',
+              (x_nozzle, y_nozzle), delimiter=";")
+
+    return length_nozzle
 
 
 # Verification: Sutton Table 3-4 "Data on Several Bell-Shaped nozzles"
 # Case: 80% Bell contour, area ratio 10
 
 radius_throat = 1
-area_ratio = 10
+area_ratio = 25
 theta_exit = 8.5 * math.pi / 180
-theta_i = 50 * math.pi / 180
+theta_i = 30 * math.pi / 180
 percent_length_conical = 0.8
 
 print(rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i, 
                                      theta_exit, 
                                      percent_length_conical))
+
+# Add plot function
+
+# Add export
 
 
 
