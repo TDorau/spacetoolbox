@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import pandas as pd
 
 def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i, 
                                    theta_exit, percent_length_conical):
@@ -28,7 +29,7 @@ def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i,
         theta_i (float): infliction / diverngence angle, where divergent curve and parabolic curve intersect
             typically 20-50°, right downstream of the nozzle throat (see sketch)
         percent_length_conical (float): length percentage of equivilant conical nozzle. E.g. an 80%
-            bell nozzle has a length that is 20% shorter than a comparable 15° cone half angle
+            bell nozzle has a length that is 20% shorter than a comparable 15° cone half angle nozzle
             of the same area ratio (see skectch)
             
     Returns:
@@ -93,8 +94,29 @@ def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i,
     np.savetxt('rao_thrust_optimized_parabola.csv',
               (x_nozzle, y_nozzle), delimiter=";")
 
+    export_rao_thrust_optimized_parabolic(x_nozzle, y_nozzle)
+
     return length_nozzle
 
+# Add plot function
+
+# Add export
+def export_rao_thrust_optimized_parabolic(x_nozzle, y_nozzle):
+    r"""Exports the Rao thrust optimized parabolic nozzle in the current directory
+
+    Args:
+        x_nozzle (numpy.array): X-coordinates of nozzle contour (along nozzle axis)
+        y_nozzle (numpy.array):  Y-Coordinates of nozzle contour (radius of nozzle)
+            
+    Returns:
+        Exports csv of nozzle contour
+
+    """
+    df = pd.DataFrame({"x_nozzle" : x_nozzle, "y_nozzle" : y_nozzle})
+    print(df)
+    df.to_csv("rao_thrust_optimized_parabola.csv", index=False)
+
+    return df
 
 # Verification: Sutton Table 3-4 "Data on Several Bell-Shaped nozzles"
 # Case: 80% Bell contour, area ratio 10
@@ -108,10 +130,5 @@ percent_length_conical = 0.8
 print(rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i, 
                                      theta_exit, 
                                      percent_length_conical))
-
-# Add plot function
-
-# Add export
-
 
 
