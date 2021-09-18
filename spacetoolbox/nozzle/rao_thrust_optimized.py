@@ -2,23 +2,27 @@ import math
 import numpy as np
 import pandas as pd
 
-def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i, 
+def calculate_parabolic(radius_throat, area_ratio, theta_i, 
                                    theta_exit, percent_length_conical):
     r"""Calculates a bell nozzle according to Rao Thrust optimized parabolic approach
         Rao applied the Method of characteristics to determine bell nozzles. 
         He later found out that a parabola is a good approximation for the 
         bell-shaped contour curve.
 
-        For more details: 
-        - Sutton - Rocket Propulsion elements - Nozzle configurations
-        - Rao - Exhaust Nozzle Contour for Optimum Thrust
-        - Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
+        | For more details: 
+        | - [1] Sutton - Rocket Propulsion elements - Nozzle configurations
+        | - [2] Rao - Exhaust Nozzle Contour for Optimum Thrust
+        | - [3] Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
+        | - [4] Agrawal - Parametric Output of Penetraition Length in De-Laval Nozzle using CFD
 
     .. math::
         C_F =  \sqrt{\frac{2\gamma^2}{\gamma-1}\left(\frac{2}{\gamma+1}\right)^{\frac{\gamma+1}{\gamma-1}}
                 \left[1-\frac{p_e}{p_c}\right]^{\frac{\gamma-1}{\gamma}}} 
                 + \left(\frac{p_e-p_a}{p_c}\right)\frac{A_e}{A_t}
 
+    Typical values of the parameters can be found in [1]. The calculation
+    requires two angles. The infliction angle :math:`{\theta}_i` 
+    
     Insert picture p.80 Sutton Rocket propulsion elements
 
     Args:
@@ -94,14 +98,14 @@ def rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i,
     np.savetxt('rao_thrust_optimized_parabola.csv',
               (x_nozzle, y_nozzle), delimiter=";")
 
-    export_rao_thrust_optimized_parabolic(x_nozzle, y_nozzle)
+    export_parabolic(x_nozzle, y_nozzle)
 
     return length_nozzle
 
 # Add plot function
 
 # Add export
-def export_rao_thrust_optimized_parabolic(x_nozzle, y_nozzle):
+def export_parabolic(x_nozzle, y_nozzle):
     r"""Exports the Rao thrust optimized parabolic nozzle in the current directory
 
     Args:
@@ -127,7 +131,7 @@ theta_exit = 8.5 * math.pi / 180
 theta_i = 30 * math.pi / 180
 percent_length_conical = 0.8
 
-print(rao_thrust_optimized_parabolic(radius_throat, area_ratio, theta_i, 
+print(calculate_parabolic(radius_throat, area_ratio, theta_i, 
                                      theta_exit, 
                                      percent_length_conical))
 
