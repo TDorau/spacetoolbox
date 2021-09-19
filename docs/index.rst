@@ -18,6 +18,7 @@ Welcome to spacetoolbox's documentation!
    
    isentropicflow
    thrustchamber
+   nozzle
 
 Indices and tables
 ==================

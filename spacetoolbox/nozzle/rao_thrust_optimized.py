@@ -4,40 +4,81 @@ import pandas as pd
 
 def calculate_parabolic(radius_throat, area_ratio, theta_i, 
                                    theta_exit, percent_length_conical):
-    r"""Calculates a bell nozzle according to Rao Thrust optimized parabolic approach
-        Rao applied the Method of characteristics to determine bell nozzles. 
-        He later found out that a parabola is a good approximation for the 
-        bell-shaped contour curve.
+    r"""
+        Calculates a bell nozzle according to Rao thrust-optimized parabolic
+        approach. Rao applied the Method of characteristics to determine bell 
+        nozzle contours. He later found out that a parabola is a good 
+        approximation for the bell-shaped contour curve.
 
         | For more details: 
-        | - [1] Sutton - Rocket Propulsion elements - Nozzle configurations
-        | - [2] Rao - Exhaust Nozzle Contour for Optimum Thrust
-        | - [3] Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
-        | - [4] Agrawal - Parametric Output of Penetraition Length in De-Laval Nozzle using CFD
-
-    .. math::
-        C_F =  \sqrt{\frac{2\gamma^2}{\gamma-1}\left(\frac{2}{\gamma+1}\right)^{\frac{\gamma+1}{\gamma-1}}
-                \left[1-\frac{p_e}{p_c}\right]^{\frac{\gamma-1}{\gamma}}} 
-                + \left(\frac{p_e-p_a}{p_c}\right)\frac{A_e}{A_t}
+        | [1] Sutton - Rocket Propulsion elements - Nozzle configurations
+        | [2] Rao - Exhaust Nozzle Contour for Optimum Thrust
+        | [3] Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
+        | [4] Agrawal - Parametric Output of Penetraition Length in De-Laval Nozzle using CFD
 
     Typical values of the parameters can be found in [1]. The calculation
-    requires two angles. The infliction angle :math:`{\theta}_i` 
+    requires two angles. The infliction angle :math:`{\theta}_i` and the
+    exit angle :math:`{\theta}_e` visible in Figure 1. 
     
-    Insert picture p.80 Sutton Rocket propulsion elements
+    .. figure:: /images/Sutton_RaoBellNozzle.jpg
+       :width: 600
+       :align: center
+       :alt: Image not available - please report
+
+    Figure 1: Definition of geometric parameters
+
+    The length of the nozzle L is defined as:
+
+    .. math::
+        L = \frac{k\left(\sqrt{\varepsilon - 1}\right)r_t}{tan(\theta_e)}
+
+    where :math:`r_t` is the throat radius, k is the length percentage of an
+    equivilant cone nozzle with 15° half angle and :math:`\varepsilon` is the
+    nozzle expansion ratio. The nozzle geometry consists of three separate
+    curves. The coordinates of the first convergent curve (index fc) are 
+    determined by the following formulas:
+
+    .. math::
+        \begin{eqnarray}
+            x_{fc} &=& cos(\theta_{fc})\cdot 1.5 \cdot r_t \\
+            y_{fc} &=& sin(\theta_{fc})\cdot 1.5 \cdot r_t + (1.5 \cdot r_t + r_t)
+        \end{eqnarray}
+
+    Both equations are solved at a number of different angles :math:`{\theta}_{fc}` 
+    that are determined with the help of a defined step size. Decreasing the
+    step size increases the number of points in each curve. The second divergent
+    curve (sc) is defined as:
+
+    .. math::
+        \begin{eqnarray}
+            x_{sc} &=& cos(\theta_{sc})\cdot 0.382 \cdot r_t \\
+            y_{sc} &=& sin(\theta_{sc})\cdot 0.382 \cdot r_t + (0.382 \cdot r_t + r_t)
+        \end{eqnarray}
+
+    The third curve (tc) is defined by a parabolic curve equation.
+
+    .. math::
+        \begin{eqnarray}
+            x_{tc} &=& ay^2 + by + c \\
+            y_{tc} &=& \sqrt{\varepsilon}r_t
+        \end{eqnarray}
+
+    The coefficients of the parabolic equations are solved by a matrix equation.
+    To solve the equation, the coordinates of the endpoints (ep) of the second
+    and third curve are needed.
 
     Args:
-        radius_throat (float): Heat capacity ratio
-        area_ratio (float):  Ratio of exit area to throat area
-        theta (float): 
-        theta_exit (float): final parabola angle (see sketch)
+        radius_throat (float): throat radius :math:`r_t`
+        area_ratio (float):  Ratio of exit area to throat area `\varepsilon`
+        theta_exit (float): final parabola angle (see sketch) `{\theta}_e`
         theta_i (float): infliction / diverngence angle, where divergent curve and parabolic curve intersect
-            typically 20-50°, right downstream of the nozzle throat (see sketch)
-        percent_length_conical (float): length percentage of equivilant conical nozzle. E.g. an 80%
+            typically 20-50°, right downstream of the nozzle throat (see sketch) `{\theta}_i`
+        percent_length_conical (float): length percentage of equivilant conical nozzle e.g. a 80%
             bell nozzle has a length that is 20% shorter than a comparable 15° cone half angle nozzle
             of the same area ratio (see skectch)
             
     Returns:
-        Rao bell nozzle contour
+        CSV-File containing the nozzle x and y coordinates
 
     """
 
@@ -54,7 +95,7 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     y_fc = np.sin(theta_fc) * 1.5 * radius_throat + (1.5 * radius_throat
            + radius_throat)
 
-    np.savetxt('firstCurve.csv', (x_fc, y_fc), delimiter=";")
+    # np.savetxt('firstCurve.csv', (x_fc, y_fc), delimiter=";")
 
     # Second curve (sc)
     angle_sc = -math.pi / 2
@@ -66,9 +107,9 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     y_sc = np.sin(theta_sc) * 0.382 * radius_throat + (0.382 * radius_throat
            + radius_throat)
 
-    np.savetxt('secondCurve.csv', (x_sc, y_sc), delimiter=";")
+    # np.savetxt('secondCurve.csv', (x_sc, y_sc), delimiter=";")
 
-    # Third curve (dc)
+    # Third curve (tc)
     x_sc_endpoint = math.cos(theta_i - math.pi / 2) * 0.382 * radius_throat
     y_sc_endpoint = math.sin(theta_i - math.pi / 2) * 0.382 * radius_throat \
            + (0.382 * radius_throat + radius_throat)
@@ -90,7 +131,7 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     y_tc = np.arange(y_sc_endpoint, y_exit + STEPSIZE_Y_TC, STEPSIZE_Y_TC)
     x_tc = coefficient_a * y_tc**2 + coefficient_b * y_tc + coefficient_c
 
-    np.savetxt('thirdCurve.csv', (x_tc, y_tc), delimiter=";")
+    # np.savetxt('thirdCurve.csv', (x_tc, y_tc), delimiter=";")
 
     x_nozzle= np.concatenate((x_fc,x_sc, x_tc),axis=0)
     y_nozzle = np.concatenate((y_fc,y_sc, y_tc),axis=0)
