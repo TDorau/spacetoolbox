@@ -5,16 +5,16 @@ import pandas as pd
 def calculate_parabolic(radius_throat, area_ratio, theta_i, 
                                    theta_exit, percent_length_conical):
     r"""
-        Calculates a bell nozzle according to Rao thrust-optimized parabolic
-        approach. Rao applied the Method of characteristics to determine bell 
-        nozzle contours. He later found out that a parabola is a good 
-        approximation for the bell-shaped contour curve.
+    Calculates a bell nozzle according to Rao thrust-optimized parabolic
+    approach. Rao applied the Method of characteristics to determine bell 
+    nozzle contours. He later found out that a parabola is a good 
+    approximation for the bell-shaped contour curve.
 
-        | For more details: 
-        | [1] Sutton - Rocket Propulsion elements - Nozzle configurations
-        | [2] Rao - Exhaust Nozzle Contour for Optimum Thrust
-        | [3] Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
-        | [4] Agrawal - Parametric Output of Penetraition Length in De-Laval Nozzle using CFD
+    | For more details: 
+    | [1] Sutton - Rocket Propulsion elements - Nozzle configurations
+    | [2] Rao - Exhaust Nozzle Contour for Optimum Thrust
+    | [3] Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
+    | [4] Agrawal - Parametric Output of Penetraition Length in De-Laval Nozzle using CFD
 
     Typical values of the parameters can be found in [1]. The calculation
     requires two angles. The infliction angle :math:`{\theta}_i` and the
@@ -67,18 +67,37 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     To solve the equation, the coordinates of the endpoints (ep) of the second
     and third curve are needed.
 
+    .. math::
+        \begin{bmatrix}
+            y_{sc,ep}^2 & y_{sc,ep} & 1 \\ 
+            y_{tc,ep}^2 & y_{tc,ep} & 1 \\ 
+            2y_{sc,ep} & 1 & 0
+        \end{bmatrix}^{-1} 
+        \cdot
+        \begin{bmatrix}
+            x_{sc,ep}\\
+            x_{tc,ep}\\
+            1 / tan(\theta_i)
+        \end{bmatrix}^{-1}     
+        =  
+        \begin{bmatrix}
+            a\\
+            b\\
+            c
+        \end{bmatrix}^{-1}    
+
     Args:
         radius_throat (float): throat radius :math:`r_t`
-        area_ratio (float):  Ratio of exit area to throat area `\varepsilon`
-        theta_exit (float): final parabola angle (see sketch) `{\theta}_e`
+        area_ratio (float):  Ratio of exit area to throat area :math:`\varepsilon`
+        theta_exit (float): final parabola angle (see Fig. 1) :math:`{\theta}_e`
         theta_i (float): infliction / diverngence angle, where divergent curve and parabolic curve intersect
-            typically 20-50°, right downstream of the nozzle throat (see sketch) `{\theta}_i`
+            typically 20-50°, right downstream of the nozzle throat (see Fig. 1) :math:`{\theta}_i`
         percent_length_conical (float): length percentage of equivilant conical nozzle e.g. a 80%
             bell nozzle has a length that is 20% shorter than a comparable 15° cone half angle nozzle
-            of the same area ratio (see skectch)
+            of the same area ratio (see Fig. 1)
             
     Returns:
-        CSV-File containing the nozzle x and y coordinates
+        CSV-File and Graph containing the nozzle x and y coordinates
 
     """
 
@@ -150,11 +169,11 @@ def export_parabolic(x_nozzle, y_nozzle):
     r"""Exports the Rao thrust optimized parabolic nozzle in the current directory
 
     Args:
-        x_nozzle (numpy.array): X-coordinates of nozzle contour (along nozzle axis)
-        y_nozzle (numpy.array):  Y-Coordinates of nozzle contour (radius of nozzle)
+        x_nozzle (numpy.array): x-coordinates of nozzle contour (along nozzle axis)
+        y_nozzle (numpy.array):  y-Coordinates of nozzle contour (radius of nozzle)
             
     Returns:
-        Exports csv of nozzle contour
+        CSV-Export of nozzle x and y coordinates
 
     """
     df = pd.DataFrame({"x_nozzle" : x_nozzle, "y_nozzle" : y_nozzle})
