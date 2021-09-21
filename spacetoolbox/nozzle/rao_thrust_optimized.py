@@ -1,9 +1,11 @@
 import math
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 def calculate_parabolic(radius_throat, area_ratio, theta_i, 
-                                   theta_exit, percent_length_conical):
+                        theta_exit, percent_length_conical):
     r"""
     Calculates a bell nozzle according to Rao thrust-optimized parabolic
     approach. Rao applied the Method of characteristics to determine bell 
@@ -152,7 +154,7 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
 
     # np.savetxt('thirdCurve.csv', (x_tc, y_tc), delimiter=";")
 
-    x_nozzle= np.concatenate((x_fc,x_sc, x_tc),axis=0)
+    x_nozzle = np.concatenate((x_fc,x_sc, x_tc),axis=0)
     y_nozzle = np.concatenate((y_fc,y_sc, y_tc),axis=0)
 
     np.savetxt('rao_thrust_optimized_parabola.csv',
@@ -160,9 +162,27 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
 
     export_parabolic(x_nozzle, y_nozzle)
 
+    plot_parabolic(x_nozzle, y_nozzle, radius_throat, area_ratio, theta_i,
+                     theta_exit)
+
     return length_nozzle
 
+
 # Add plot function
+def plot_parabolic(x_nozzle, y_nozzle, radius_throat, area_ratio, theta_i,
+                     theta_exit):
+    negative_y_nozzle = -1 * y_nozzle
+    fig = plt.figure()
+    # Add axes object to our figure that takes up entire figure
+    ax = fig.add_subplot(111)
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.plot(x_nozzle, y_nozzle)
+    ax.plot(x_nozzle, negative_y_nozzle)
+    fig.tight_layout()
+    plt.axis('scaled')
+    plt.savefig('rao_thrust_optimized_parabola.png')
+
 
 # Add export
 def export_parabolic(x_nozzle, y_nozzle):
