@@ -163,24 +163,42 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     export_parabolic(x_nozzle, y_nozzle)
 
     plot_parabolic(x_nozzle, y_nozzle, radius_throat, area_ratio, theta_i,
-                     theta_exit)
+                     theta_exit, x_sc_endpoint, y_sc_endpoint, y_exit,
+                     length_nozzle, x_fc)
 
     return length_nozzle
 
 
 # Add plot function
 def plot_parabolic(x_nozzle, y_nozzle, radius_throat, area_ratio, theta_i,
-                     theta_exit):
+                   theta_exit, x_sc_endpoint, y_sc_endpoint, y_exit,
+                   length_nozzle, x_fc):
+
     negative_y_nozzle = -1 * y_nozzle
     fig = plt.figure()
-    # Add axes object to our figure that takes up entire figure
+
+    # Plot definition
     ax = fig.add_subplot(111)
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
-    ax.plot(x_nozzle, y_nozzle)
-    ax.plot(x_nozzle, negative_y_nozzle)
+    ax.plot(x_nozzle, y_nozzle, color="dodgerblue")
+    ax.plot(x_nozzle, negative_y_nozzle, color="dodgerblue")
     fig.tight_layout()
     plt.axis('scaled')
+
+    # Annotations and Arrows
+    plt.arrow(0, 0, length_nozzle, 0, length_includes_head=True,
+          head_width=0.15, head_length=0.3)
+    plt.annotate(r'Nozzle length $L_n$', xy=(length_nozzle / 2, 0.15),
+                   ha='center')
+    plt.arrow(0, 0, 0, radius_throat, length_includes_head=True,
+          head_width=0.15, head_length=0.3)
+    plt.annotate(r'Throat radius $r_t$', xy=(0.15, radius_throat / 2),
+                   ha='left')
+    plt.arrow(length_nozzle, 0, 0, y_exit, 
+            length_includes_head=True, head_width=0.15, head_length=0.3)
+
+
     plt.savefig('rao_thrust_optimized_parabola.png')
 
 
