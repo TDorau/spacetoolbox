@@ -183,21 +183,40 @@ def plot_parabolic(x_nozzle, y_nozzle, radius_throat, area_ratio, theta_i,
     ax.spines['top'].set_visible(False)
     ax.plot(x_nozzle, y_nozzle, color="dodgerblue")
     ax.plot(x_nozzle, negative_y_nozzle, color="dodgerblue")
+    plt.xlabel('x-Coordinate in mm')
+    plt.ylabel('y-Coordinate in mm')
     fig.tight_layout()
     plt.axis('scaled')
 
     # Annotations and Arrows
     plt.arrow(0, 0, length_nozzle, 0, length_includes_head=True,
           head_width=0.15, head_length=0.3)
-    plt.annotate(r'Nozzle length $L_n$', xy=(length_nozzle / 2, 0.15),
+    nozzle_length_annotation = r'$L_n$ = ' + str(round(length_nozzle, 1)) \
+                               + ' mm'
+    plt.annotate(nozzle_length_annotation, xy=(length_nozzle / 2, 0.15),
                    ha='center')
     plt.arrow(0, 0, 0, radius_throat, length_includes_head=True,
           head_width=0.15, head_length=0.3)
-    plt.annotate(r'Throat radius $r_t$', xy=(0.15, radius_throat / 2),
+    throat_radius_annotation = r'$r_t$ = ' + str(radius_throat) + ' mm'
+    plt.annotate(throat_radius_annotation, xy=(0.15, radius_throat / 2),
                    ha='left')
     plt.arrow(length_nozzle, 0, 0, y_exit, 
             length_includes_head=True, head_width=0.15, head_length=0.3)
-
+    exit_radius_annotation = r'$r_e$ = ' + str(y_exit) + ' mm'
+    plt.annotate(exit_radius_annotation, xy=(length_nozzle - 0.15, y_exit / 2),
+                   ha='right')
+    theta_e_annotation =  r'$\theta_e$ = ' + str(round(theta_exit * 180 
+                          / math.pi, 1)) + '°'
+    plt.annotate(theta_e_annotation, xy=(length_nozzle - 0.15, y_exit + 
+                 0.15), ha='center')
+    plt.plot(length_nozzle, y_exit, marker='o', markersize=3,
+             color="red")
+    theta_i_annotation =  r'$\theta_i$ = ' + str(round(theta_i * 180 
+                          / math.pi, 1)) + '°'
+    plt.annotate(theta_i_annotation, xy=(x_sc_endpoint + 0.5, 
+                 y_sc_endpoint), ha='left')
+    plt.plot(x_sc_endpoint, y_sc_endpoint, marker='o', markersize=3,
+             color="red")
 
     plt.savefig('rao_thrust_optimized_parabola.png')
 
