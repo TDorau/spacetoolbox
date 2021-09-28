@@ -92,11 +92,13 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
         radius_throat (float): throat radius :math:`r_t`
         area_ratio (float):  Ratio of exit area to throat area :math:`\varepsilon`
         theta_exit (float): final parabola angle (see Fig. 1) :math:`{\theta}_e`
-        theta_i (float): infliction / diverngence angle, where divergent curve and parabolic curve intersect
-            typically 20-50°, right downstream of the nozzle throat (see Fig. 1) :math:`{\theta}_i`
-        percent_length_conical (float): length percentage of equivilant conical nozzle e.g. a 80%
-            bell nozzle has a length that is 20% shorter than a comparable 15° cone half angle nozzle
-            of the same area ratio (see Fig. 1)
+        theta_i (float): infliction / diverngence angle, where divergent curve 
+            and parabolic curve intersect typically 20-50°, right downstream of
+            the nozzle throat (see Fig. 1) :math:`{\theta}_i`
+        percent_length_conical (float): length percentage of equivilant conical 
+            nozzle e.g. a 80% bell nozzle has a length that is 20% shorter 
+            than a comparable 15° cone half angle nozzle of the same area 
+            ratio (see Fig. 1)
             
     Returns:
         CSV-File and Graph containing the nozzle x and y coordinates
@@ -170,10 +172,28 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
 
 
 # Add plot function
-def plot_parabolic(x_nozzle, y_nozzle, radius_throat, area_ratio, theta_i,
-                   theta_exit, x_sc_endpoint, y_sc_endpoint, y_exit,
-                   length_nozzle, x_fc):
+def plot_parabolic(x_nozzle, y_nozzle, radius_throat, theta_i, theta_exit, 
+                   x_sc_endpoint, y_sc_endpoint, y_exit, length_nozzle):
+    r"""Exports the Rao thrust optimized parabolic nozzle as png image
 
+    Args:
+        x_nozzle (numpy.array): x-coordinates of nozzle contour 
+            (along nozzle axis)
+        y_nozzle (numpy.array):  y-Coordinates of nozzle contour 
+            (radius of nozzle)
+        radius_throat: throat radius :math:`r_t`
+        theta_i: infliction / diverngence angle, where divergent curve and 
+            parabolic curve intersect typically 20-50°, right downstream of 
+            the nozzle throat (see Fig. 1) :math:`{\theta}_i`
+        theta_exit: final parabola angle (see Fig. 1) :math:`{\theta}_e`
+        x_sc_endpoint: x-Coordinate of second curve end point
+        y_sc_endpoint: y-Coordinate of second curve end point
+        y_exit: y-Coordinate of third curve end point, same as exit radius
+            
+    Returns:
+        Exports a png nozzle of the rao parabolic nozzle geometry
+
+    """
     negative_y_nozzle = -1 * y_nozzle
     fig = plt.figure()
 
@@ -226,8 +246,10 @@ def export_parabolic(x_nozzle, y_nozzle):
     r"""Exports the Rao thrust optimized parabolic nozzle in the current directory
 
     Args:
-        x_nozzle (numpy.array): x-coordinates of nozzle contour (along nozzle axis)
-        y_nozzle (numpy.array):  y-Coordinates of nozzle contour (radius of nozzle)
+        x_nozzle (numpy.array): x-coordinates of nozzle contour 
+            (along nozzle axis)
+        y_nozzle (numpy.array):  y-Coordinates of nozzle contour (radius of 
+            nozzle)
             
     Returns:
         CSV-Export of nozzle x and y coordinates
