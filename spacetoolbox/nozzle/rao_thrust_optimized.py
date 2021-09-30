@@ -27,7 +27,7 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
        :align: center
        :alt: Image not available - please report
 
-    Figure 1: Definition of geometric parameters
+    Figure 1: Definition of geometric parameters [1]
 
     The length of the nozzle L is defined as:
 
@@ -175,6 +175,13 @@ def plot_parabolic(x_nozzle, y_nozzle, radius_throat, theta_i, theta_exit,
                    x_sc_endpoint, y_sc_endpoint, y_exit, length_nozzle):
     r"""Exports the Rao thrust optimized parabolic nozzle as png image
 
+    .. figure:: /images/rao_thrust_optimized_parabola.png
+        :width: 600
+        :align: center
+        :alt: Image not available - please report
+
+    Figure 2: Outut .png of a Rao thrust optimized parabolic nozzle 
+
     Args:
         x_nozzle (numpy.array): x-coordinates of nozzle contour 
             (along nozzle axis)
@@ -183,8 +190,8 @@ def plot_parabolic(x_nozzle, y_nozzle, radius_throat, theta_i, theta_exit,
         radius_throat: throat radius :math:`r_t`
         theta_i: infliction / diverngence angle, where divergent curve and 
             parabolic curve intersect typically 20-50°, right downstream of 
-            the nozzle throat (see Fig. 1) :math:`{\theta}_i`
-        theta_exit: final parabola angle (see Fig. 1) :math:`{\theta}_e`
+            the nozzle throat :math:`{\theta}_i` (see Fig. 1) 
+        theta_exit: final parabola angle :math:`{\theta}_e` (see Fig. 1) 
         x_sc_endpoint: x-Coordinate of second curve end point
         y_sc_endpoint: y-Coordinate of second curve end point
         y_exit: y-Coordinate of third curve end point, same as exit radius
