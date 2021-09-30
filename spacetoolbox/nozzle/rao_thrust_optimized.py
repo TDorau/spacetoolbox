@@ -164,9 +164,8 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
 
     export_parabolic(x_nozzle, y_nozzle)
 
-    plot_parabolic(x_nozzle, y_nozzle, radius_throat, area_ratio, theta_i,
-                     theta_exit, x_sc_endpoint, y_sc_endpoint, y_exit,
-                     length_nozzle, x_fc)
+    plot_parabolic(x_nozzle, y_nozzle, radius_throat, theta_i, theta_exit,
+                   x_sc_endpoint, y_sc_endpoint, y_exit, length_nozzle)
 
     return length_nozzle
 
