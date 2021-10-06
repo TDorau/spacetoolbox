@@ -1,9 +1,8 @@
 import math
 import numpy as np
 import random
-from scipy.optimize import fsolve
 
-def prandtl_meyer_function_from_angle(gamma, prandtl_meyer_angle):
+def prandtl_meyer_function_from_angle(prandtl_meyer_angle, gamma):
     r"""Calculates the Mach number given the Prandtl-Meyer angle
 
     Args:
@@ -14,15 +13,22 @@ def prandtl_meyer_function_from_angle(gamma, prandtl_meyer_angle):
         Mach number
 
     """
-    N_MACH = 100000
+    N_MACH = 10000
+    minimum = 1
     for i in range(1, N_MACH  + 1):
-        mach = random.uniform(0, 5)
-    
-
+        mach_i = random.uniform(1, 5)
+        prandtl_meyer_angle_radians = prandtl_meyer_angle / 180 * math.pi
+        prandtl_meyer_angle_compare = prandtl_meyer_function_from_mach(mach_i, 
+                                          gamma)
+        delta_prandtl_meyer_angle = abs(prandtl_meyer_angle_radians \
+                                    - prandtl_meyer_angle_compare)
+        if delta_prandtl_meyer_angle < minimum:
+            mach = mach_i
+            minimum = delta_prandtl_meyer_angle
 
     return mach
 
-def prandtl_meyer_function_solver_form(mach, gamma):
+def prandtl_meyer_function_from_mach(mach, gamma):
     r"""Calculates the Prandtl-Meyer angle given the mach number
 
     Args:
@@ -38,5 +44,3 @@ def prandtl_meyer_function_solver_form(mach, gamma):
         - 1))
 
     return prandtl_meyer_angle
-
-prandtl_meyer_function_from_angle(36, 1.4)
