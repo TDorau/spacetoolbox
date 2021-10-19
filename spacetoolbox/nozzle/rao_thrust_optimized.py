@@ -17,6 +17,7 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     | [2] Rao - Exhaust Nozzle Contour for Optimum Thrust
     | [3] Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
     | [4] Agrawal - Parametric Output of Penetration Length in De-Laval Nozzle using CFD
+    | [5] Huzel - Modern Engineering for Design of Liquid-propellant Rocket Engines; Ch. 4
 
     Typical values of the parameters can be found in [1]. The calculation
     requires two angles. The infliction angle :math:`{\theta}_i` and the
@@ -106,8 +107,9 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     """
 
     # First curve (fc)
-    length_nozzle = percent_length_conical * (math.sqrt(area_ratio) - 1) \
-                    * radius_throat / math.tan(15 * math.pi / 180)
+    #   (Nozzle length equation taken from source [5])
+    length_nozzle = percent_length_conical * radius_throat * ((math.sqrt(area_ratio) - 1) \
+                    + 1.5 * ((1 / math.cos(15 * math.pi / 180)) - 1)) / math.tan(15 * math.pi / 180)
 
     angle_fc =  -(math.pi + (45 * math.pi / 180))
     N_STEPS_FC = 300
