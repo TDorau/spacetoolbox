@@ -16,7 +16,7 @@ def calculate_parabolic(radius_throat, area_ratio, theta_i,
     | [1] Sutton - Rocket Propulsion elements - Nozzle configurations
     | [2] Rao - Exhaust Nozzle Contour for Optimum Thrust
     | [3] Kulhanek -  Design Analysis And Simulation of Rocket Propulsion System
-    | [4] Agrawal - Parametric Output of Penetraition Length in De-Laval Nozzle using CFD
+    | [4] Agrawal - Parametric Output of Penetration Length in De-Laval Nozzle using CFD
 
     Typical values of the parameters can be found in [1]. The calculation
     requires two angles. The infliction angle :math:`{\theta}_i` and the
