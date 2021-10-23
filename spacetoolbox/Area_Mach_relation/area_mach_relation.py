@@ -17,14 +17,14 @@ def area_to_mach(radius_local):
         \left( \frac{A}{A^*} \right)^2=\frac{1}{M^2}\left[ \frac{2}{\gamma+1}\left( 1+\frac{\gamma-1}{2}M^2 \right)
         \right]^\frac{\gamma+1}{\gamma-1}
 
-        Output values can be verified using the Annex in [1].
+        Output values can be verified using the Appendix A in [1].
 
         Returns
         a mach number value corresponding to the given local area's radius.
     """
     gamma = 1.4
     radius_throat = 4.3263
-    radius_local = 1
+    radius_local = 5
     tolerance = 0.01
     mach_no = 0.001
     step_size = 0.001
@@ -44,8 +44,13 @@ def area_to_mach(radius_local):
 
     i = rs / ls
 
-    while i < (1 - tolerance) or i > (1 + tolerance)
+    while i < (1 - tolerance) or i > (1 + tolerance):
         mach_no = mach_no + step_size
+        rs = (1 / mach_no ** 2) * (2 * (1 + ((gamma - 1) * mach_no ** 2) / 2) / (gamma + 1)) ** (
+                    (gamma + 1) / (gamma - 1))
+        i = rs / ls
     else:
         print(mach_no)
     return mach_no
+
+area_to_mach(5)
