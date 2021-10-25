@@ -25,8 +25,12 @@ def area_to_mach(radius_local):
     gamma = 1.4
     radius_throat = 4.3263
     tolerance = 0.000001
-    mach_no = 0.00001
+    mach_no = 0.000001
     step_size = 0.000001
+
+    if radius_local < radius_throat:
+        raise Exception("Input must be >= than {}".format(radius_throat))
+
 
     # local area ratio is the local area divided by the throat area
     local_area_ratio = (radius_local ** 2) / (radius_throat ** 2)
@@ -53,4 +57,4 @@ def area_to_mach(radius_local):
         print(mach_no)
     return mach_no
 
-area_to_mach(4.3263)
+area_to_mach(2)
