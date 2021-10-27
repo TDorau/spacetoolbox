@@ -111,4 +111,5 @@ def area_to_mach(x_pos, radius_local):
             print(mach_no)
             return mach_no
 
-area_to_mach(1, 8)
+#test run
+area_to_mach(1, 5)
