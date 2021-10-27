@@ -26,36 +26,89 @@ def area_to_mach(x_pos, radius_local):
     gamma = 1.4
     radius_throat = 4.3263
     tolerance = 0.000001
-    mach_no = 0.000001
-    step_size = 0.000001
+    lower_limit = 1 - tolerance
+    upper_limit = 1 + tolerance
+    decimals = 5
 
+    # initial values for the numerical approximation
+    mach_no = 1
+    step_size = -0.1
+    supersonic = False
+
+    # check if the input is valid
     if radius_local < radius_throat:
         raise Exception("Input must be >= than {}".format(radius_throat))
 
+    # check if the local area position is upstream (negative x_pos; subsonic and convergent)
+    # or downstream (positive x_pos; supersonic and divergent) from the throat
+    # the x axis origin lies on the throat
+    if x_pos < 0:
+        supersonic = False
+    else:
+        supersonic = True
 
-    # local area ratio is the local area divided by the throat area
+    # local area ratio (=squared local radius ratio) is the local area divided by the throat area
     local_area_ratio = (radius_local ** 2) / (radius_throat ** 2)
 
     # left side "ls" of the area-mach relation equation
     ls = local_area_ratio**2
 
     # right side "rs" of the area-mach relation equation
-    rs = (1/mach_no**2)*(2*(1+((gamma-1)*mach_no**2)/2)/(gamma+1))**((gamma+1)/(gamma-1))
+    rs = (1 / mach_no ** 2) * (2 * (1 + ((gamma - 1) * mach_no ** 2) / 2) / (gamma + 1)) ** ((gamma + 1)/(gamma - 1))
 
+    i = rs / ls
     # following, a while loop that compares the right side and the left side,
     # when the ratio rs/ls != 1 (within a specified tolerance, e.g. 1%), the mach number mach_no is changed
     # this is iterated until the corresponding mach number is found
 
-    i = rs / ls
+    # check if both sides of the equation match within the given tolerance
+    # First check the trivial case where the local_area_ratio=1 (at the throat. x_pos=0)
+    if i > lower_limit and i < upper_limit:
+        return mach_no
 
-    while i < (1 - tolerance) or i > (1 + tolerance):
-        mach_no = mach_no + step_size
-        rs = (1 / mach_no ** 2) * (2 * (1 + ((gamma - 1) * mach_no ** 2) / 2) / (gamma + 1)) ** (
-                    (gamma + 1) / (gamma - 1))
-        i = rs / ls
-    else:
-        mach_no = np.around(mach_no, decimals=3)
-        print(mach_no)
-    return mach_no
+    # second, check if the flow is subsonic, find the corresponding Mach number numerically
+    # this method guesses a Mach_number and refines the guess with each iteration.
+    elif not supersonic:
+        while i < lower_limit or i > upper_limit:
+            while i > upper_limit:
+                mach_no = mach_no + step_size
+                rs = (1 / mach_no ** 2) * (2 * (1 + ((gamma - 1) * mach_no ** 2) / 2) / (gamma + 1)) ** (
+                        (gamma + 1) / (gamma - 1))
+                i = rs / ls
+                if i < lower_limit:
+                    step_size = step_size * -0.1
+            while i < lower_limit:
+                mach_no = mach_no + step_size
+                rs = (1 / mach_no ** 2) * (2 * (1 + ((gamma - 1) * mach_no ** 2) / 2) / (gamma + 1)) ** (
+                        (gamma + 1) / (gamma - 1))
+                i = rs / ls
+                if i > upper_limit:
+                    step_size = step_size * -0.1
 
-# area_to_mach(2)
+        else:
+            mach_no = np.around(mach_no, decimals=5)
+            print(mach_no)
+            return mach_no
+    elif supersonic:
+        step_size = step_size*-1
+        while i < lower_limit or i > upper_limit:
+            while i < lower_limit:
+                mach_no = mach_no + step_size
+                rs = (1 / mach_no ** 2) * (2 * (1 + ((gamma - 1) * mach_no ** 2) / 2) / (gamma + 1)) ** (
+                        (gamma + 1) / (gamma - 1))
+                i = rs / ls
+                if i > upper_limit:
+                    step_size = step_size * -0.1
+            while i > upper_limit:
+                mach_no = mach_no + step_size
+                rs = (1 / mach_no ** 2) * (2 * (1 + ((gamma - 1) * mach_no ** 2) / 2) / (gamma + 1)) ** (
+                        (gamma + 1) / (gamma - 1))
+                i = rs / ls
+                if i < lower_limit:
+                    step_size = step_size * -0.1
+        else:
+            mach_no = np.around(mach_no, decimals=5)
+            print(mach_no)
+            return mach_no
+
+area_to_mach(1, 8)
