@@ -4,10 +4,11 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-def area_to_mach(radius_local):
+def area_to_mach(x_pos, radius_local):
     r"""
-        Calculates the local mach number from a given local Radius input using quasi-one dimensional gas flow theory.
-        Can be used, for example, to verify nozzle data by comparing simulated results with this analytical tool.
+        Calculates the local mach number from a given local area input (in terms of radius) using quasi-one dimensional
+        gas flow theory. Can be used, for example, to verify nozzle data by comparing simulated results
+        with this analytical tool.
 
         | For more details:
         | [1] Modern Compressible Flow - Chapter 5 "Quasi-One-Dimensional Flow", J.D. Anderson
