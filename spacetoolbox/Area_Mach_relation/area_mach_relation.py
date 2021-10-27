@@ -119,3 +119,21 @@ def area_to_mach(x_pos, radius_local):
 #test run
 area_to_mach(0, 4.3263)
 
+
+def nozzle_contour_to_mach(filename):
+    r"""receives a nozzle contour in the form of a csv file (x, y) where x is the local position on the axis and
+    y is the local radius, and returns another csv file (x, y, M) with an additional column describing the
+    corresponding mach number according to Quasi 1D compressible flow theory.
+    """
+    # Read CSV file into DataFrame df
+    df = pd.read_csv('sample.csv', index_col=0)
+
+    # Show dataframe
+    print(df)
+
+    # build csv file to export/return (fix)
+    x_nozzle = np.concatenate((x_fc,x_sc, x_tc),axis=0)
+    y_nozzle = np.concatenate((y_fc,y_sc, y_tc),axis=0)
+    mach_number_nozzle = np.concatenate((y_fc,y_sc, y_tc),axis=0)
+    np.savetxt('nozzle_contour_with_Q1D_mach_values.csv',
+              (x_nozzle, y_nozzle, mach_number_nozzle), delimiter=";")
