@@ -67,7 +67,7 @@ def area_to_mach(x_pos, radius_local, radius_throat):
     # check if both sides of the equation match within the given tolerance
     # First check the trivial case where the local_area_ratio=1 (at the throat. x_pos=0)
     if i > lower_limit and i < upper_limit:
-        print(mach_no)
+        #print(mach_no)
         return mach_no
 
     # second, check if the flow is subsonic, find the corresponding Mach number numerically
@@ -91,7 +91,7 @@ def area_to_mach(x_pos, radius_local, radius_throat):
 
         else:
             mach_no = np.around(mach_no, decimals=5)
-            print(mach_no)
+            #print(mach_no)
             return mach_no
     elif supersonic:
         step_size = step_size*-1
@@ -112,7 +112,7 @@ def area_to_mach(x_pos, radius_local, radius_throat):
                     step_size = step_size * -0.1
         else:
             mach_no = np.around(mach_no, decimals=5)
-            print(mach_no)
+            #print(mach_no)
             return mach_no
 
 #test run
