@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import cProfile
 
 def area_to_mach(x_pos, radius_local):
     r"""
@@ -64,6 +65,7 @@ def area_to_mach(x_pos, radius_local):
     # check if both sides of the equation match within the given tolerance
     # First check the trivial case where the local_area_ratio=1 (at the throat. x_pos=0)
     if i > lower_limit and i < upper_limit:
+        print(mach_no)
         return mach_no
 
     # second, check if the flow is subsonic, find the corresponding Mach number numerically
@@ -112,4 +114,5 @@ def area_to_mach(x_pos, radius_local):
             return mach_no
 
 #test run
-area_to_mach(1, 5)
+area_to_mach(0, 4.3263)
+
