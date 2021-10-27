@@ -5,7 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import cProfile
 
-def area_to_mach(x_pos, radius_local):
+def area_to_mach(x_pos, radius_local, radius_throat):
     r"""
         Calculates the local mach number from a given axial position and local area input (in terms of its
         corresponding radius) using quasi-one dimensional (Q1D) gas flow theory.
@@ -28,7 +28,6 @@ def area_to_mach(x_pos, radius_local):
         a mach number value corresponding to the given local area's radius.
     """
     gamma = 1.4
-    radius_throat = 4.3263
     tolerance = 0.000001
     lower_limit = 1 - tolerance
     upper_limit = 1 + tolerance
@@ -117,7 +116,7 @@ def area_to_mach(x_pos, radius_local):
             return mach_no
 
 #test run
-area_to_mach(0, 4.3263)
+#area_to_mach(0, 5, 4.3263)
 
 
 def nozzle_contour_to_mach(filename):
