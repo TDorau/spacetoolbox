@@ -7,12 +7,15 @@ import cProfile
 
 def area_to_mach(x_pos, radius_local):
     r"""
-        Calculates the local mach number from a given local area input (in terms of radius) using quasi-one dimensional
-        gas flow theory. Can be used, for example, to verify nozzle data by comparing simulated results
-        with this analytical tool.
+        Calculates the local mach number from a given axial position and local area input (in terms of its
+        corresponding radius) using quasi-one dimensional (Q1D) gas flow theory.
+        This code can be used, for example, to verify nozzle data by comparing simulated results
+        with the analytical Q1D flow solution.
 
         | For more details:
         | [1] Modern Compressible Flow - Chapter 5 "Quasi-One-Dimensional Flow", J.D. Anderson
+        | [2] Compressible Flow in a Nozzle, ANSYS Innovation Course.
+              courses.ansys.com/index.php/courses/compressible-flow-in-a-nozzle/
 
         It uses the following mathematical relation, the area mach relation:
         (LateX equation)
