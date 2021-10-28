@@ -115,32 +115,31 @@ def area_to_mach(x_pos, radius_local, radius_throat):
             #print(mach_no)
             return mach_no
 
-#test run
-#area_to_mach(0, 5, 4.3263)
-
 
 def nozzle_contour_to_mach(filename, radius_throat):
     r"""receives a nozzle contour in the form of a csv file (x, y) where x is the local position on the axis and
-    y is the local radius, and returns another csv file (x, y, M) with an additional column describing the
+    y is the local radius, and returns another csv file (x, y, M) with an additional column assigning the
     corresponding mach number according to Quasi 1D compressible flow theory.
     """
     # Read CSV file into DataFrame df
     df = pd.read_csv(filename, index_col=None)
 
-    # Process data
-    i = 0
-    mach_number_nozzle = np.ones(len(df.index))
-    while i < len(df.index):
-        local_mach = area_to_mach(df.iloc[i]['x_nozzle'], df.iloc[i]['y_nozzle'], radius_throat)
-        mach_number_nozzle[i] = local_mach
-        i = i + 1
-
-    # print(df)
-
-    # build csv file to export/return (fix)
+    # Build data arrays
     x_nozzle = df['x_nozzle'].to_numpy()
     y_nozzle = df['y_nozzle'].to_numpy()
+    # contour_mach array is a 2D array [(x_i,y_i,M_i),...]
+    contour_mach = np.zeros((len(df.index), 3))
+
+    # Process data into the 2d array
+    i = 0
+    while i < len(df.index):
+        local_mach = area_to_mach(df.iloc[i]['x_nozzle'], df.iloc[i]['y_nozzle'], radius_throat)
+        contour_mach[i] = (x_nozzle[i], y_nozzle[i],local_mach)
+        i = i + 1
+
+    # build csv file to export/return
     np.savetxt('nozzle_contour_with_Q1D_mach_values.csv',
-              (x_nozzle, y_nozzle, mach_number_nozzle), delimiter=";")
+              contour_mach, delimiter=";")
+
 
 nozzle_contour_to_mach('nozzle_contour.csv', 1)
