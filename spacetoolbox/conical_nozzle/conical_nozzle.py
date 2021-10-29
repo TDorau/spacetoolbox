@@ -96,7 +96,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     # Process data into the global 2d array
     i = N_STEPS_CW
     j = N_STEPS_CR - 1
-    current_step_count = N_STEPS_CW + N_STEPS_CR
+    current_step_count = current_step_count + N_STEPS_CR
     while i < current_step_count:
         nozzle_coordinates[i] = cr_coordinates[j]
         j = j - 1
@@ -113,7 +113,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         j = j + 1
 
     j = 0
-    current_step_count = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC
+    current_step_count = current_step_count + N_STEPS_CC
     while i < current_step_count:
         nozzle_coordinates[i] = cc_coordinates[j]
         j = j + 1
@@ -137,7 +137,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
 
     # Process data into the global 2d array
     j = 0
-    current_step_count = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC + N_STEPS_AR
+    current_step_count = current_step_count + N_STEPS_AR
     while i < current_step_count:
         nozzle_coordinates[i] = ar_coordinates[j]
         j = j + 1
@@ -156,7 +156,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
 
     # Process data into global 2d array
     j = 0
-    current_step_count = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC + N_STEPS_DC
+    current_step_count = current_step_count + N_STEPS_DC
     while i < current_step_count:
         nozzle_coordinates[i] = dc_coordinates[j]
         j = j + 1
