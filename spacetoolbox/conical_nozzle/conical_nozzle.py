@@ -53,9 +53,11 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     N_STEPS_CC = 20
     N_STEPS_AR = 20
     N_STEPS_DC = 50
-    total_steps = N_STEPS_CW #+ N_STEPS_CR + N_STEPS_CC + N_STEPS_AR + N_STEPS_DC
+    total_steps = N_STEPS_CW + N_STEPS_CR #+ N_STEPS_CC + N_STEPS_AR + N_STEPS_DC
 
     nozzle_coordinates = np.zeros((total_steps, 2))
+    x = np.zeros(total_steps)
+    y = np.zeros(total_steps)
 
     # First curve, the chamber wall (cw) (y = beta * radius_throat)
     x_cw = np.arange(0,N_STEPS_CW)
@@ -64,9 +66,30 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     # Process data into the 2d array
     i = 0
     while i < N_STEPS_CW:
-        nozzle_coordinates[i] = (x_cw[i], y_cw[i])
+        x[i] = x_cw[i]
+        y[i] = y_cw[i]
+        nozzle_coordinates[i] = (x[i], y[i])
         i = i + 1
 
+    # Second curve, the convergent transition arc (cr) (not working)
+    angle_cr = -(math.pi + (theta * math.pi / 180))
+    step_cr = (-math.pi / 2 - angle_cr) / N_STEPS_CR
+    theta_cr = np.arange(math.pi / 2, math.pi * 3 / 4, step_cr)
+
+    x_cr = np.cos(theta_cr) * R_con
+    y_cr = np.sin(theta_cr) * R_con + (R_con + radius_throat * beta)
+
+
+    # Process data into the 2d array
+    i = N_STEPS_CW + 1
+    while i < N_STEPS_CW + N_STEPS_CR:
+        x[i] = x_cr[i]
+        y[i] = y_cr[i]
+        nozzle_coordinates[i] = (x[i], y[i])
+        i = i + 1
+
+    print(x)
+    print(y)
     np.savetxt('chamberwall.csv', nozzle_coordinates, delimiter=";")
 
 
