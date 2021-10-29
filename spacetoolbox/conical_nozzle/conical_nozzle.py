@@ -107,6 +107,31 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         j = j + 1
         i = i + 1
 
+    # Fourth curve, the circular arc at the throat (ar)
+    start_angle_ar = -(math.pi + (theta * math.pi / 180))
+    end_angle_ar = -(math.pi / 2 - alpha * math.pi / 180)
+    step_ar = (end_angle_ar - start_angle_ar) / N_STEPS_AR
+    theta_ar = np.arange(start_angle_ar, end_angle_cr, step_ar)
+
+    x_ar = np.cos(theta_ar) * radius_throat * arc_factor
+    y_ar = np.sin(theta_ar) * radius_throat * arc_factor + (radius_throat * (1 + arc_factor))
+    ar_coordinates = np.zeros((N_STEPS_AR, 2))
+
+    # Process data into a local 2d array
+    j = 0
+    while j < N_STEPS_AR:
+        ar_coordinates[j] = (x_ar[j], y_ar[j])
+        j = j + 1
+
+    # Process data into the global 2d array
+    j = 0
+    current_step_count = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC + N_STEPS_AR
+    while i < current_step_count:
+        nozzle_coordinates[i] = ar_coordinates[j]
+        j = j + 1
+        i = i + 1
+
+    
     print(nozzle_coordinates)
     np.savetxt('chamberwall.csv', nozzle_coordinates, delimiter=";")
 
