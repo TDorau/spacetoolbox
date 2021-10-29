@@ -34,11 +34,11 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         + combustion chamber to convergent section transition radius 'R_con' [mm]
 
     The geometry or contour consists of 5 different curves:
-        1. A straight line from the combustion chamber wall
-        2. An circular arc transitioning to the converging straight diagonal
-        3. The converging straight diagonal
-        4. The throat circular arc
-        5. And the diverging straight diagonal
+        1. A straight line from the combustion chamber wall (cw)
+        2. An circular arc transitioning to the converging straight diagonal (cr)
+        3. The converging straight diagonal (cc)
+        4. The throat circular arc (ar)
+        5. And the diverging straight diagonal (dc)
 
     The throat center is defined as the origin of the coordinate system.
 
@@ -53,14 +53,14 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     N_STEPS_CC = 20
     N_STEPS_AR = 20
     N_STEPS_DC = 50
-    total_steps = N_STEPS_CW + N_STEPS_CR #+ N_STEPS_CC + N_STEPS_AR + N_STEPS_DC
+    total_steps = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC + N_STEPS_AR + N_STEPS_DC
 
     nozzle_coordinates = np.zeros((total_steps, 2))
     x = np.zeros(total_steps)
     y = np.zeros(total_steps)
 
     # First curve, the chamber wall (cw) (y = beta * radius_throat)
-    x_cw = np.arange(0, l_ch/N_STEPS_CW)
+    x_cw = np.arange(0, N_STEPS_CW)
     y_cw = np.ones(N_STEPS_CW) * (beta * radius_throat)
 
     # Process data into the 2d array
@@ -94,6 +94,17 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     while i < current_step_count:
         nozzle_coordinates[i] = cr_coordinates[j]
         j = j - 1
+        i = i + 1
+
+    # Third curve, the converging straight diagonal (cc)
+    x_cc = np.arange(0, N_STEPS_CC)
+    y_cc = np.arange(0, N_STEPS_CC) * math.tan(-alpha * math.pi / 180) + 1
+
+    j = 0
+    current_step_count = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC
+    while i < current_step_count:
+        nozzle_coordinates[i] = (x_cc[j], y_cc[j])
+        j = j + 1
         i = i + 1
 
     print(nozzle_coordinates)
