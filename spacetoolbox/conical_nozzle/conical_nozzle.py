@@ -62,13 +62,19 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     # First curve, the chamber wall (cw) (y = beta * radius_throat)
     x_cw = np.arange(0, N_STEPS_CW)
     y_cw = np.ones(N_STEPS_CW) * (beta * radius_throat)
+    cw_coordinates = np.zeros((N_STEPS_CW, 2))
 
-    # Process data into the 2d array
+    # Process data into a local 2D array
+    j = 0
+    while j < N_STEPS_CW:
+        cw_coordinates[j] = (x_cw[j], y_cw[j])
+        j = j + 1
+
+    # Process data into the global 2d array
     i = 0
-    while i < N_STEPS_CW:
-        x[i] = x_cw[i]
-        y[i] = y_cw[i]
-        nozzle_coordinates[i] = (x[i], y[i])
+    current_step_count = N_STEPS_CW
+    while i < current_step_count:
+        nozzle_coordinates[i] = cw_coordinates[i]
         i = i + 1
 
     # Second curve, the convergent transition arc (cr) (not working)
