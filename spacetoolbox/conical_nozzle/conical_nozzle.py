@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def calculate_conical_nozzle(radius_throat, epsilon, alpha,
                         theta, arc_factor, beta, l_ch, R_con):
 
-r"""
+    r"""
     Creates a standard conical nozzle contour and exports it as a CSV file.
 
     "In early rocket-engine applications, the conical nozzle, which proved satisfactory in
@@ -25,7 +25,7 @@ r"""
 
     Input parameters include:
         + the throat radius 'radius_throat'
-        + the expansion ratio 'epsilon' (exit radius / throat radius)
+        + the expansion ratio 'epsilon' (exit radius^2 / throat radius^2)
         + the divergent half angle 'alpha'  (from 12 to 18 deg)
         + the convergent half angle 'theta' (from 20 to 45 deg)
         + the arc radius factor 'arc_factor' ((from 0,5 to 1,5)
@@ -43,11 +43,31 @@ r"""
     The throat center is defined as the origin of the coordinate system.
 
 
-
-    Figure 1: Definition of geometric parameters [1]
-
-
     Returns:
         CSV-File and Graph containing the nozzle x and y coordinates
 
     """
+    # setup the 2D array containing the nozzle's coordinates
+    N_STEPS_CW = 10
+    N_STEPS_CR = 10
+    N_STEPS_CC = 20
+    N_STEPS_AR = 20
+    N_STEPS_DC = 50
+    total_steps = N_STEPS_CW #+ N_STEPS_CR + N_STEPS_CC + N_STEPS_AR + N_STEPS_DC
+
+    nozzle_coordinates = np.zeros((total_steps, 2))
+
+    # First curve, the chamber wall (cw) (y = beta * radius_throat)
+    x_cw = np.arange(0,N_STEPS_CW)
+    y_cw = np.ones(N_STEPS_CW) * (beta * radius_throat)
+
+    # Process data into the 2d array
+    i = 0
+    while i < N_STEPS_CW:
+        nozzle_coordinates[i] = (x_cw[i], y_cw[i])
+        i = i + 1
+
+    np.savetxt('chamberwall.csv', nozzle_coordinates, delimiter=";")
+
+
+calculate_conical_nozzle(4.3263, 4.82, 15, 50, 1.5, 3.467166, 15, 5)
