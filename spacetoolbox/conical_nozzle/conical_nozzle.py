@@ -137,7 +137,26 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         j = j + 1
         i = i + 1
 
-    
+    # Fifth curve, the diverging straight diagonal (dc)
+    x_dc = np.arange(0, N_STEPS_DC)
+    y_dc = np.arange(0, N_STEPS_DC) * math.tan(alpha * math.pi / 180) + 1
+    dc_coordinates = np.zeros((N_STEPS_DC, 2))
+
+    # Process data into a local 2d array
+    j = 0
+    while j < N_STEPS_DC:
+        dc_coordinates[j] = (x_dc[j], y_dc[j])
+        j = j + 1
+
+    # Process data into global 2d array
+    j = 0
+    current_step_count = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC + N_STEPS_DC
+    while i < current_step_count:
+        nozzle_coordinates[i] = dc_coordinates[j]
+        j = j + 1
+        i = i + 1
+
+
     print(nozzle_coordinates)
     np.savetxt('chamberwall.csv', nozzle_coordinates, delimiter=";")
 
