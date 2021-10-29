@@ -98,12 +98,18 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
 
     # Third curve, the converging straight diagonal (cc)
     x_cc = np.arange(0, N_STEPS_CC)
-    y_cc = np.arange(0, N_STEPS_CC) * math.tan(-alpha * math.pi / 180) + 1
+    y_cc = np.arange(0, N_STEPS_CC) * math.tan(-theta * math.pi / 180) + 1
+    cc_coordinates = np.zeros((N_STEPS_CC, 2))
+
+    # Process data into local 2D array
+    while j < N_STEPS_CC:
+        cc_coordinates[j] = (x_cc[j], y_cc[j])
+        j = j + 1
 
     j = 0
     current_step_count = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC
     while i < current_step_count:
-        nozzle_coordinates[i] = (x_cc[j], y_cc[j])
+        nozzle_coordinates[i] = cc_coordinates[j]
         j = j + 1
         i = i + 1
 
