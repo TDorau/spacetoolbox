@@ -77,7 +77,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         nozzle_coordinates[i] = cw_coordinates[i]
         i = i + 1
 
-    # Second curve, the convergent transition arc (cr) (not working)
+    # Second curve, the convergent transition arc (cr)
     start_angle_cr = math.pi / 2
     end_angle_cr = (theta * math.pi / 180)
     step_cr = (start_angle_cr - end_angle_cr) / N_STEPS_CR
@@ -125,7 +125,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         i = i + 1
 
     # Fourth curve, the circular arc at the throat (ar)
-    start_angle_ar = -(math.pi - (theta * math.pi / 180))
+    start_angle_ar = -(math.pi / 2 + (theta * math.pi / 180))
     end_angle_ar = -(math.pi / 2 - alpha * math.pi / 180)
     step_ar = (end_angle_ar - start_angle_ar) / N_STEPS_AR
     theta_ar = np.arange(start_angle_ar, end_angle_cr, step_ar)
