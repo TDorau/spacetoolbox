@@ -53,11 +53,9 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     n_steps_3 = 20
     n_steps_4 = 20
     n_steps_5 = 50
-    total_steps = n_steps_1 + n_steps_2 + n_steps_3 + n_steps_4 + n_steps_5
+    total_steps = n_steps_1 + n_steps_2 + n_steps_3 + n_steps_4 + n_steps_5 + 1
 
     nozzle_coordinates = np.zeros((total_steps, 2))
-    x = np.zeros(total_steps)
-    y = np.zeros(total_steps)
 
     # intersection points
     y_3_start = radius_throat * beta - R_con * (1 - math.cos(theta * math.pi / 180))
@@ -68,7 +66,12 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
 
     x_2_start = x_3_start - R_con * math.sin(theta * math.pi / 180)
     x_1_start = x_2_start - l_ch
+
     x_5_start = radius_throat * arc_factor * math.sin(alpha * math.pi / 180)
+    y_5_start = radius_throat * arc_factor * (1 - math.cos(alpha * math.pi / 180)) + radius_throat
+    b_5 = y_5_start - math.tan(alpha * math.pi / 180) * x_5_start
+    y_5_end = radius_throat * math.sqrt(epsilon)
+    x_5_end = (y_5_end - b_5) / math.tan(alpha * math.pi / 180)
 
     # First curve, the chamber wall (cw) (y = beta * radius_throat)
     x_1 = np.arange(x_1_start, x_2_start, (x_2_start - x_1_start) / n_steps_1)
@@ -155,19 +158,20 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         i = i + 1
 
     # Fifth curve, the diverging straight diagonal (dc)
-    x_5 = np.arange(0, n_steps_5)
-    y_5 = np.arange(0, n_steps_5) * math.tan(alpha * math.pi / 180) + 1
-    c5_coordinates = np.zeros((n_steps_5, 2))
+    step_size_5 = (x_5_end - x_5_start) / n_steps_5
+    x_5 = np.arange(x_5_start, (x_5_end + step_size_5), step_size_5)
+    y_5 = x_5 * math.tan(alpha * math.pi / 180) + b_5
+    c5_coordinates = np.zeros((n_steps_5 + 1, 2))
 
     # Process data into a local 2d array
     j = 0
-    while j < n_steps_5:
+    while j < n_steps_5 + 1:
         c5_coordinates[j] = (x_5[j], y_5[j])
         j = j + 1
 
     # Process data into global 2d array
     j = 0
-    current_step_count = current_step_count + n_steps_5
+    current_step_count = current_step_count + n_steps_5 + 1
     while i < current_step_count:
         nozzle_coordinates[i] = c5_coordinates[j]
         j = j + 1
@@ -175,7 +179,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
 
 
     print(nozzle_coordinates)
-    np.savetxt('chamberwall.csv', nozzle_coordinates, delimiter=";")
+    np.savetxt('conical_nozzle.csv', nozzle_coordinates, delimiter=";")
 
 
 calculate_conical_nozzle(4.3263, 4.82, 15, 50, 1.5, 3.467166, 8, 5)
