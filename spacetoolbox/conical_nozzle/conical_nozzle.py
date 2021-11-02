@@ -103,8 +103,13 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         i = i + 1
 
     # Third curve, the converging straight diagonal (cc)
-    x_cc = np.arange(0, N_STEPS_CC)
-    y_cc = np.arange(0, N_STEPS_CC) * math.tan(-theta * math.pi / 180) + 1
+    x_cc_end = (-radius_throat * arc_factor * math.sin(theta * math.pi / 180))
+    y_cc_end = radius_throat * (1 + arc_factor * (1 - math.cos(theta * math.pi / 180)))
+    b_3 = y_cc_end - math.tan(-theta * math.pi / 180) * x_cc_end
+    y_cc_start = radius_throat * beta - R_con * (1 - math.cos(theta * math.pi / 180))
+    x_cc_start = (y_cc_start - b_3) / math.tan(-theta * math.pi / 180)
+    x_cc = np.arange(x_cc_start, x_cc_end, (x_cc_end-x_cc_start)/N_STEPS_CC)
+    y_cc = x_cc * math.tan(-theta * math.pi / 180) + b_3
     cc_coordinates = np.zeros((N_STEPS_CC, 2))
 
     # Process data into local 2D array
