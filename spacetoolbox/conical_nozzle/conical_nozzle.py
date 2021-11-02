@@ -48,122 +48,125 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
 
     """
     # setup the 2D array containing the nozzle's coordinates
-    N_STEPS_CW = 10
-    N_STEPS_CR = 10
-    N_STEPS_CC = 20
-    N_STEPS_AR = 20
-    N_STEPS_DC = 50
-    total_steps = N_STEPS_CW + N_STEPS_CR + N_STEPS_CC + N_STEPS_AR + N_STEPS_DC
+    n_steps_1 = 10
+    n_steps_2 = 20
+    n_steps_3 = 10
+    n_steps_4 = 20
+    n_steps_5 = 50
+    total_steps = n_steps_1 + n_steps_3 + n_steps_2 + n_steps_4 + n_steps_5
 
     nozzle_coordinates = np.zeros((total_steps, 2))
     x = np.zeros(total_steps)
     y = np.zeros(total_steps)
 
+    y_3_start = radius_throat * beta - R_con * (1 - math.cos(theta * math.pi / 180))
+    x_3_start = (y_3_start - b_3) / math.tan(-theta * math.pi / 180)
+    x_2_start = x_3_start - math.sin(theta * math.pi / 180)
+
     # First curve, the chamber wall (cw) (y = beta * radius_throat)
-    x_cw = np.arange(0, N_STEPS_CW)
-    y_cw = np.ones(N_STEPS_CW) * (beta * radius_throat)
-    cw_coordinates = np.zeros((N_STEPS_CW, 2))
+    x_1 = np.arange(0, n_steps_1)
+    y_1 = np.ones(n_steps_1) * (beta * radius_throat)
+    c1_coordinates = np.zeros((n_steps_1, 2))
 
     # Process data into a local 2D array
     j = 0
-    while j < N_STEPS_CW:
-        cw_coordinates[j] = (x_cw[j], y_cw[j])
+    while j < n_steps_1:
+        c1_coordinates[j] = (x_1[j], y_1[j])
         j = j + 1
 
     # Process data into the global 2d array
     i = 0
-    current_step_count = N_STEPS_CW
+    current_step_count = n_steps_1
     while i < current_step_count:
-        nozzle_coordinates[i] = cw_coordinates[i]
+        nozzle_coordinates[i] = c1_coordinates[i]
         i = i + 1
 
     # Second curve, the convergent transition arc (cr)
-    start_angle_cr = math.pi / 2
-    end_angle_cr = (theta * math.pi / 180)
-    step_cr = (start_angle_cr - end_angle_cr) / N_STEPS_CR
-    theta_cr = np.arange(end_angle_cr, start_angle_cr, step_cr)
+    start_angle_2 = math.pi / 2
+    end_angle_2 = (theta * math.pi / 180)
+    step_2 = (start_angle_2 - end_angle_2) / n_steps_3
+    theta_2 = np.arange(end_angle_2, start_angle_2, step_2)
 
-    x_cr = np.cos(theta_cr) * R_con
-    y_cr = np.sin(theta_cr) * R_con + (radius_throat * beta - R_con)
-    cr_coordinates = np.zeros((N_STEPS_CR, 2))
+    x_2 = np.cos(theta_2) * R_con - x_2_start
+    y_2 = np.sin(theta_2) * R_con + (radius_throat * beta - R_con)
+    c2_coordinates = np.zeros((n_steps_3, 2))
 
     # Process data into a local 2d array
     j = 0
-    while j < N_STEPS_CR:
-        cr_coordinates[j] = (x_cr[j], y_cr[j])
+    while j < n_steps_3:
+        c2_coordinates[j] = (x_2[j], y_2[j])
         j = j + 1
 
     # Process data into the global 2d array
-    i = N_STEPS_CW
-    j = N_STEPS_CR - 1
-    current_step_count = current_step_count + N_STEPS_CR
+    i = n_steps_1
+    j = n_steps_3 - 1
+    current_step_count = current_step_count + n_steps_3
     while i < current_step_count:
-        nozzle_coordinates[i] = cr_coordinates[j]
+        nozzle_coordinates[i] = c2_coordinates[j]
         j = j - 1
         i = i + 1
 
     # Third curve, the converging straight diagonal (cc)
-    x_cc_end = (-radius_throat * arc_factor * math.sin(theta * math.pi / 180))
-    y_cc_end = radius_throat * (1 + arc_factor * (1 - math.cos(theta * math.pi / 180)))
-    b_3 = y_cc_end - math.tan(-theta * math.pi / 180) * x_cc_end
-    y_cc_start = radius_throat * beta - R_con * (1 - math.cos(theta * math.pi / 180))
-    x_cc_start = (y_cc_start - b_3) / math.tan(-theta * math.pi / 180)
-    x_cc = np.arange(x_cc_start, x_cc_end, (x_cc_end-x_cc_start)/N_STEPS_CC)
-    y_cc = x_cc * math.tan(-theta * math.pi / 180) + b_3
-    cc_coordinates = np.zeros((N_STEPS_CC, 2))
+    x_3_end = (-radius_throat * arc_factor * math.sin(theta * math.pi / 180))
+    y_3_end = radius_throat * (1 + arc_factor * (1 - math.cos(theta * math.pi / 180)))
+    b_3 = y_3_end - math.tan(-theta * math.pi / 180) * x_3_end
+
+    x_3 = np.arange(x_3_start, x_3_end, (x_3_end-x_3_start) / n_steps_2)
+    y_3 = x_3 * math.tan(-theta * math.pi / 180) + b_3
+    c3_coordinates = np.zeros((n_steps_2, 2))
 
     # Process data into local 2D array
-    while j < N_STEPS_CC:
-        cc_coordinates[j] = (x_cc[j], y_cc[j])
+    while j < n_steps_2:
+        c3_coordinates[j] = (x_3[j], y_3[j])
         j = j + 1
 
     j = 0
-    current_step_count = current_step_count + N_STEPS_CC
+    current_step_count = current_step_count + n_steps_2
     while i < current_step_count:
-        nozzle_coordinates[i] = cc_coordinates[j]
+        nozzle_coordinates[i] = c3_coordinates[j]
         j = j + 1
         i = i + 1
 
     # Fourth curve, the circular arc at the throat (ar)
-    start_angle_ar = -(math.pi / 2 + (theta * math.pi / 180))
-    end_angle_ar = -(math.pi / 2 - alpha * math.pi / 180)
-    step_ar = (end_angle_ar - start_angle_ar) / N_STEPS_AR
-    theta_ar = np.arange(start_angle_ar, end_angle_cr, step_ar)
+    start_angle_4 = -(math.pi / 2 + (theta * math.pi / 180))
+    end_angle_4 = -(math.pi / 2 - alpha * math.pi / 180)
+    step_4 = (end_angle_4 - start_angle_4) / n_steps_4
+    theta_4 = np.arange(start_angle_4, end_angle_2, step_4)
 
-    x_ar = np.cos(theta_ar) * radius_throat * arc_factor
-    y_ar = np.sin(theta_ar) * radius_throat * arc_factor + (radius_throat * (1 + arc_factor))
-    ar_coordinates = np.zeros((N_STEPS_AR, 2))
+    x_4 = np.cos(theta_4) * radius_throat * arc_factor
+    y_4 = np.sin(theta_4) * radius_throat * arc_factor + (radius_throat * (1 + arc_factor))
+    c4_coordinates = np.zeros((n_steps_4, 2))
 
     # Process data into a local 2d array
     j = 0
-    while j < N_STEPS_AR:
-        ar_coordinates[j] = (x_ar[j], y_ar[j])
+    while j < n_steps_4:
+        c4_coordinates[j] = (x_4[j], y_4[j])
         j = j + 1
 
     # Process data into the global 2d array
     j = 0
-    current_step_count = current_step_count + N_STEPS_AR
+    current_step_count = current_step_count + n_steps_4
     while i < current_step_count:
-        nozzle_coordinates[i] = ar_coordinates[j]
+        nozzle_coordinates[i] = c4_coordinates[j]
         j = j + 1
         i = i + 1
 
     # Fifth curve, the diverging straight diagonal (dc)
-    x_dc = np.arange(0, N_STEPS_DC)
-    y_dc = np.arange(0, N_STEPS_DC) * math.tan(alpha * math.pi / 180) + 1
-    dc_coordinates = np.zeros((N_STEPS_DC, 2))
+    x_5 = np.arange(0, n_steps_5)
+    y_5 = np.arange(0, n_steps_5) * math.tan(alpha * math.pi / 180) + 1
+    c5_coordinates = np.zeros((n_steps_5, 2))
 
     # Process data into a local 2d array
     j = 0
-    while j < N_STEPS_DC:
-        dc_coordinates[j] = (x_dc[j], y_dc[j])
+    while j < n_steps_5:
+        c5_coordinates[j] = (x_5[j], y_5[j])
         j = j + 1
 
     # Process data into global 2d array
     j = 0
-    current_step_count = current_step_count + N_STEPS_DC
+    current_step_count = current_step_count + n_steps_5
     while i < current_step_count:
-        nozzle_coordinates[i] = dc_coordinates[j]
+        nozzle_coordinates[i] = c5_coordinates[j]
         j = j + 1
         i = i + 1
 
