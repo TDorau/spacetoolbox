@@ -61,13 +61,17 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
 
     # intersection points
     y_3_start = radius_throat * beta - R_con * (1 - math.cos(theta * math.pi / 180))
+    x_3_end = (-radius_throat * arc_factor * math.sin(theta * math.pi / 180))
+    y_3_end = radius_throat * (1 + arc_factor * (1 - math.cos(theta * math.pi / 180)))
+    b_3 = y_3_end - math.tan(-theta * math.pi / 180) * x_3_end
     x_3_start = (y_3_start - b_3) / math.tan(-theta * math.pi / 180)
-    x_2_start = x_3_start - math.sin(theta * math.pi / 180)
+
+    x_2_start = x_3_start - R_con * math.sin(theta * math.pi / 180)
     x_1_start = x_2_start - l_ch
     x_5_start = radius_throat * arc_factor * math.sin(alpha * math.pi / 180)
 
     # First curve, the chamber wall (cw) (y = beta * radius_throat)
-    x_1 = np.arange(x_1_start, x_2_start)
+    x_1 = np.arange(x_1_start, x_2_start, (x_2_start - x_1_start) / n_steps_1)
     y_1 = np.ones(n_steps_1) * (beta * radius_throat)
     c1_coordinates = np.zeros((n_steps_1, 2))
 
@@ -90,7 +94,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     step_2 = (start_angle_2 - end_angle_2) / n_steps_2
     theta_2 = np.arange(end_angle_2, start_angle_2, step_2)
 
-    x_2 = np.cos(theta_2) * R_con - x_2_start
+    x_2 = np.cos(theta_2) * R_con + x_2_start
     y_2 = np.sin(theta_2) * R_con + (radius_throat * beta - R_con)
     c2_coordinates = np.zeros((n_steps_2, 2))
 
@@ -110,10 +114,6 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         i = i + 1
 
     # Third curve, the converging straight diagonal (cc)
-    x_3_end = (-radius_throat * arc_factor * math.sin(theta * math.pi / 180))
-    y_3_end = radius_throat * (1 + arc_factor * (1 - math.cos(theta * math.pi / 180)))
-    b_3 = y_3_end - math.tan(-theta * math.pi / 180) * x_3_end
-
     x_3 = np.arange(x_3_start, x_3_end, (x_3_end-x_3_start) / n_steps_3)
     y_3 = x_3 * math.tan(-theta * math.pi / 180) + b_3
     c3_coordinates = np.zeros((n_steps_3, 2))
@@ -178,4 +178,4 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     np.savetxt('chamberwall.csv', nozzle_coordinates, delimiter=";")
 
 
-calculate_conical_nozzle(4.3263, 4.82, 15, 50, 1.5, 3.467166, 15, 5)
+calculate_conical_nozzle(4.3263, 4.82, 15, 50, 1.5, 3.467166, 8, 5)
