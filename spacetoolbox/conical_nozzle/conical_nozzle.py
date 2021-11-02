@@ -59,12 +59,15 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     x = np.zeros(total_steps)
     y = np.zeros(total_steps)
 
+    # intersection points
     y_3_start = radius_throat * beta - R_con * (1 - math.cos(theta * math.pi / 180))
     x_3_start = (y_3_start - b_3) / math.tan(-theta * math.pi / 180)
     x_2_start = x_3_start - math.sin(theta * math.pi / 180)
+    x_1_start = x_2_start - l_ch
+    x_5_start = radius_throat * arc_factor * math.sin(alpha * math.pi / 180)
 
     # First curve, the chamber wall (cw) (y = beta * radius_throat)
-    x_1 = np.arange(0, n_steps_1)
+    x_1 = np.arange(x_1_start, x_2_start)
     y_1 = np.ones(n_steps_1) * (beta * radius_throat)
     c1_coordinates = np.zeros((n_steps_1, 2))
 
