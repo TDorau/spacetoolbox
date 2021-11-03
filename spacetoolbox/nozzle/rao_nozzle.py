@@ -195,7 +195,7 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     x_6 = np.arange(x_6_start, (x_6_end + step_size_6), step_size_6)
     parabola_a = math.tan((90 - theta_n) * math.pi / 180) / (2 * y_6_start)
     parabola_c = x_6_start - parabola_a * y_6_start ** 2
-    y_6 = parabola_a * (x_6 ** 2) + parabola_c
+    y_6 = math.sqrt((x_6 - parabola_c) / parabola_a)
     c6_coordinates = np.zeros((n_steps_6 + 1, 2))
 
     # Process data into a local 2d array
