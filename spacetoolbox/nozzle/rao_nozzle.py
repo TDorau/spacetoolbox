@@ -191,11 +191,16 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
         i = i + 1
 
 # Sixth curve, the diverging straight diagonal (6)
-    step_size_6 = (x_6_end - x_6_start) / n_steps_6
-    x_6 = np.arange(x_6_start, (x_6_end + step_size_6), step_size_6)
-    parabola_a = math.tan((90 - theta_n) * math.pi / 180) / (2 * y_6_start)
-    parabola_c = x_6_start - parabola_a * y_6_start ** 2
-    y_6 = math.sqrt((x_6 - parabola_c) / parabola_a)
+    step_size_6 = (y_6_end - y_6_start) / n_steps_6
+    y_6 = np.arange(y_6_start, (y_6_end + step_size_6), step_size_6)
+
+    parabola_a_up = x_6_start - x_6_end - math.tan(theta_n * math.pi / 180) * (y_6_start - y_6_end)
+    parabola_a_dn = ((y_6_start ** 2) - (y_6_end ** 2) - 2 * y_6_start * (y_6_start - y_6_end))
+    parabola_a = parabola_a_up / parabola_a_dn
+    parabola_b = math.tan(theta_n * math.pi / 180) - 2 * parabola_a * y_6_start
+    parabola_c = x_6_start - parabola_a * y_6_start ** 2 - parabola_b * y_6_start
+
+    x_6 = parabola_a * (y_6 ** 2) + parabola_b * y_6 + parabola_c
     c6_coordinates = np.zeros((n_steps_6 + 1, 2))
 
     # Process data into a local 2d array
@@ -216,4 +221,4 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     np.savetxt('rao_nozzle.csv', nozzle_coordinates, delimiter=";")
 
 
-calculate_rao_nozzle(4.3263, 4.82, 15, 50, 3.467166, 8, 5)
+calculate_rao_nozzle(4.3263, 4.82, 30, 50, 3.467166, 8, 5)
