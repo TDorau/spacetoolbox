@@ -113,4 +113,23 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
         j = j - 1
         i = i + 1
 
+    # Third curve, the converging straight diagonal (3)
+    x_3 = np.arange(x_3_start, x_3_end, (x_3_end-x_3_start) / n_steps_3)
+    y_3 = x_3 * math.tan(-theta_con * math.pi / 180) + b_3
+    c3_coordinates = np.zeros((n_steps_3, 2))
+
+    # Process data into local 2D array
+    while j < n_steps_3:
+        c3_coordinates[j] = (x_3[j], y_3[j])
+        j = j + 1
+
+    j = 0
+    current_step_count = current_step_count + n_steps_3
+    while i < current_step_count:
+        nozzle_coordinates[i] = c3_coordinates[j]
+        j = j + 1
+        i = i + 1
+
+
+
 calculate_rao_nozzle(4.3263, 4.82, 15, 50, 3.467166, 8, 5)
