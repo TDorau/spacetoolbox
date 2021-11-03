@@ -70,7 +70,7 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     x_2_start = x_3_start - R_con * math.sin(theta_con * math.pi / 180)
     x_1_start = x_2_start - l_ch
 
-    # First curve, the chamber wall (1) (y = beta * radius_throat)
+# First curve, the chamber wall (1) (y = beta * radius_throat)
     x_1 = np.arange(x_1_start, x_2_start, (x_2_start - x_1_start) / n_steps_1)
     y_1 = np.ones(n_steps_1) * (beta * radius_throat)
     c1_coordinates = np.zeros((n_steps_1, 2))
@@ -88,7 +88,7 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
         nozzle_coordinates[i] = c1_coordinates[i]
         i = i + 1
 
-    # Second curve, the convergent transition arc (2)
+# Second curve, the convergent transition arc (2)
     start_angle_2 = math.pi / 2
     end_angle_2 = (theta_con * math.pi / 180)
     step_2 = (start_angle_2 - end_angle_2) / n_steps_2
@@ -113,7 +113,7 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
         j = j - 1
         i = i + 1
 
-    # Third curve, the converging straight diagonal (3)
+# Third curve, the converging straight diagonal (3)
     x_3 = np.arange(x_3_start, x_3_end, (x_3_end-x_3_start) / n_steps_3)
     y_3 = x_3 * math.tan(-theta_con * math.pi / 180) + b_3
     c3_coordinates = np.zeros((n_steps_3, 2))
@@ -127,6 +127,30 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     current_step_count = current_step_count + n_steps_3
     while i < current_step_count:
         nozzle_coordinates[i] = c3_coordinates[j]
+        j = j + 1
+        i = i + 1
+
+# Fourth curve, the circular arc at the throat (4)
+    start_angle_4 = -(math.pi / 2 + (theta_con * math.pi / 180))
+    end_angle_4 = -(math.pi / 2)
+    step_4 = (end_angle_4 - start_angle_4) / n_steps_4
+    theta_4 = np.arange(start_angle_4, end_angle_2, step_4)
+
+    x_4 = np.cos(theta_4) * radius_throat * arc_4
+    y_4 = np.sin(theta_4) * radius_throat * arc_4 + (radius_throat * (1 + arc_4))
+    c4_coordinates = np.zeros((n_steps_4, 2))
+
+    # Process data into a local 2d array
+    j = 0
+    while j < n_steps_4:
+        c4_coordinates[j] = (x_4[j], y_4[j])
+        j = j + 1
+
+    # Process data into the global 2d array
+    j = 0
+    current_step_count = current_step_count + n_steps_4
+    while i < current_step_count:
+        nozzle_coordinates[i] = c4_coordinates[j]
         j = j + 1
         i = i + 1
 
