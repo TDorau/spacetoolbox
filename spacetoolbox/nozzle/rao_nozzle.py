@@ -222,8 +222,17 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
         j = j + 1
         i = i + 1
 
-    print(nozzle_coordinates)
+    # Process array for 3D (x,y,z) for CAD
+    nozzle_cad = np.zeros((total_steps, 3))
+    j = 0
+    while j < total_steps:
+        nozzle_cad[j] = (nozzle_coordinates[j, 0], nozzle_coordinates[j, 1], 0)
+        j = j + 1
+
+
+    print(nozzle_cad)
     np.savetxt('rao_nozzle.csv', nozzle_coordinates, delimiter=";")
+    np.savetxt('rao_nozzle3D.csv', nozzle_cad, delimiter=",")
 
 
 calculate_rao_nozzle(4.3263, 4.82, 30, 50, 3.467166, 8, 5)
