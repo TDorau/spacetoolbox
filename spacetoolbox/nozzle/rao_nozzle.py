@@ -194,11 +194,16 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     step_size_6 = (y_6_end - y_6_start) / n_steps_6
     y_6 = np.arange(y_6_start, (y_6_end + step_size_6), step_size_6)
 
-    parabola_a_up = x_6_start - x_6_end - math.tan(theta_n * math.pi / 180) * (y_6_start - y_6_end)
-    parabola_a_dn = ((y_6_start ** 2) - (y_6_end ** 2) - 2 * y_6_start * (y_6_start - y_6_end))
-    parabola_a = parabola_a_up / parabola_a_dn
-    parabola_b = math.tan(theta_n * math.pi / 180) - 2 * parabola_a * y_6_start
-    parabola_c = x_6_start - parabola_a * y_6_start ** 2 - parabola_b * y_6_start
+    matrix_y = np.array([[y_6_start ** 2, y_6_start, 1],
+                         [y_6_end ** 2, y_6_end, 1],
+                         [2 * y_6_start, 1, 0]])
+    matrix_x = np.array([x_6_start, x_6_end, 1 / math.tan(theta_n * math.pi / 180)])
+    inverse_matrix_y = np.linalg.inv(matrix_y)
+    parabola_coefficients = inverse_matrix_y.dot(matrix_x)
+
+    parabola_a = parabola_coefficients[0]
+    parabola_b = parabola_coefficients[1]
+    parabola_c = parabola_coefficients[2]
 
     x_6 = parabola_a * (y_6 ** 2) + parabola_b * y_6 + parabola_c
     c6_coordinates = np.zeros((n_steps_6 + 1, 2))
