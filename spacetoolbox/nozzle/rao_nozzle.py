@@ -48,6 +48,11 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     # parameter definition
     arc_4 = 1.5
     arc_5 = 0.382
+    k = 0.8
+
+    # length of an equivalent standard 15 degree conical nozzle
+    l_n_standard = ( radius_throat * ((math.sqrt(epsilon) - 1) \
+                    + arc_4 * ((1 / math.cos(15 * math.pi / 180)) - 1)) / math.tan(15 * math.pi / 180) )
 
     # setup the 2D array containing the nozzle's coordinates
     n_steps_1 = 10
@@ -69,6 +74,12 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
 
     x_2_start = x_3_start - R_con * math.sin(theta_con * math.pi / 180)
     x_1_start = x_2_start - l_ch
+
+    x_6_start = radius_throat * arc_5 * math.sin(theta_n * math.pi / 180)
+    y_6_start = radius_throat * (1 + arc_5 * (1 - math.cos(theta_n * math.pi / 180)))
+    x_6_end = l_n_standard * k
+    y_6_end = radius_throat * math.sqrt(epsilon)
+
 
 # First curve, the chamber wall (1) (y = beta * radius_throat)
     x_1 = np.arange(x_1_start, x_2_start, (x_2_start - x_1_start) / n_steps_1)
@@ -175,6 +186,28 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     current_step_count = current_step_count + n_steps_5
     while i < current_step_count:
         nozzle_coordinates[i] = c5_coordinates[j]
+        j = j + 1
+        i = i + 1
+
+# Sixth curve, the diverging straight diagonal (6)
+    step_size_6 = (x_6_end - x_6_start) / n_steps_6
+    x_6 = np.arange(x_6_start, (x_6_end + step_size_6), step_size_6)
+    parabola_a = math.tan((90 - theta_n) * math.pi / 180) / (2 * y_6_start)
+    parabola_c = x_6_start - parabola_a * y_6_start ** 2
+    y_6 = parabola_a * (x_6 ** 2) + parabola_c
+    c6_coordinates = np.zeros((n_steps_6 + 1, 2))
+
+    # Process data into a local 2d array
+    j = 0
+    while j < n_steps_6 + 1:
+        c6_coordinates[j] = (x_6[j], y_6[j])
+        j = j + 1
+
+    # Process data into global 2d array
+    j = 0
+    current_step_count = current_step_count + n_steps_6 + 1
+    while i < current_step_count:
+        nozzle_coordinates[i] = c6_coordinates[j]
         j = j + 1
         i = i + 1
 
