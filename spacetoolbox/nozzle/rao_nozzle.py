@@ -130,7 +130,7 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
         j = j + 1
         i = i + 1
 
-# Fourth curve, the circular arc at the throat (4)
+# Fourth curve, the convergent circular arc at the throat (4)
     start_angle_4 = -(math.pi / 2 + (theta_con * math.pi / 180))
     end_angle_4 = -(math.pi / 2)
     step_4 = (end_angle_4 - start_angle_4) / n_steps_4
@@ -151,6 +151,30 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     current_step_count = current_step_count + n_steps_4
     while i < current_step_count:
         nozzle_coordinates[i] = c4_coordinates[j]
+        j = j + 1
+        i = i + 1
+
+# Fifth curve, the divergent circular arc at the throat (5)
+    start_angle_5 = -(math.pi / 2)
+    end_angle_5 = -(math.pi / 2 - theta_n * math.pi / 180)
+    step_5 = (end_angle_5 - start_angle_5) / n_steps_5
+    theta_5 = np.arange(start_angle_5, end_angle_5, step_5)
+
+    x_5 = np.cos(theta_5) * radius_throat * arc_5
+    y_5 = np.sin(theta_5) * radius_throat * arc_5 + (radius_throat * (1 + arc_5))
+    c5_coordinates = np.zeros((n_steps_5, 2))
+
+    # Process data into a local 2d array
+    j = 0
+    while j < n_steps_5:
+        c5_coordinates[j] = (x_5[j], y_5[j])
+        j = j + 1
+
+    # Process data into the global 2d array
+    j = 0
+    current_step_count = current_step_count + n_steps_5
+    while i < current_step_count:
+        nozzle_coordinates[i] = c5_coordinates[j]
         j = j + 1
         i = i + 1
 
