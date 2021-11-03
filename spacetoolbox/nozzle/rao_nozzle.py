@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-def calculate_rao_nozzle(radius_throat, epsilon, alpha,
+def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
                         theta, beta, l_ch, R_con):
 
     r"""
@@ -60,7 +60,34 @@ def calculate_rao_nozzle(radius_throat, epsilon, alpha,
 
     nozzle_coordinates = np.zeros((total_steps, 2))
 
-    
+    # intersection points
+    y_3_start = radius_throat * beta - R_con * (1 - math.cos(theta * math.pi / 180))
+    x_3_end = (-radius_throat * arc_factor * math.sin(theta * math.pi / 180))
+    y_3_end = radius_throat * (1 + arc_factor * (1 - math.cos(theta * math.pi / 180)))
+    b_3 = y_3_end - math.tan(-theta * math.pi / 180) * x_3_end
+    x_3_start = (y_3_start - b_3) / math.tan(-theta * math.pi / 180)
 
+    x_2_start = x_3_start - R_con * math.sin(theta * math.pi / 180)
+    x_1_start = x_2_start - l_ch
+
+    # First curve, the chamber wall (1) (y = beta * radius_throat)
+    x_1 = np.arange(x_1_start, x_2_start, (x_2_start - x_1_start) / n_steps_1)
+    y_1 = np.ones(n_steps_1) * (beta * radius_throat)
+    c1_coordinates = np.zeros((n_steps_1, 2))
+
+    # Process data into a local 2D array
+    j = 0
+    while j < n_steps_1:
+        c1_coordinates[j] = (x_1[j], y_1[j])
+        j = j + 1
+
+    # Process data into the global 2d array
+    i = 0
+    current_step_count = n_steps_1
+    while i < current_step_count:
+        nozzle_coordinates[i] = c1_coordinates[i]
+        i = i + 1
+
+    
 
 calculate_rao_nozzle(4.3263, 4.82, 15, 50, 3.467166, 8, 5)
