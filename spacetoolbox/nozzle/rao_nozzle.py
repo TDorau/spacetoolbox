@@ -60,8 +60,8 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     n_steps_2 = 10
     n_steps_3 = 20
     n_steps_4 = 10
-    n_steps_5 = 10
-    n_steps_6 = 50
+    n_steps_5 = 20
+    n_steps_6 = 100
     total_steps = n_steps_1 + n_steps_2 + n_steps_3 + n_steps_4 + n_steps_5 + n_steps_6 + 1
 
     nozzle_coordinates = np.zeros((total_steps, 2))
