@@ -4,8 +4,9 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+
 def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
-                         theta_con, beta, l_ch, R_con):
+                         theta_con, beta, l_ch, r_con):
 
     r"""
     Creates a rao nozzle or a "parabolic approximation of the bell nozzle" contour and exports it as a CSV file.
@@ -51,8 +52,8 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     k = 0.8
 
     # length of an equivalent standard 15 degree conical nozzle
-    l_n_standard = ( radius_throat * ((math.sqrt(epsilon) - 1) \
-                    + arc_4 * ((1 / math.cos(15 * math.pi / 180)) - 1)) / math.tan(15 * math.pi / 180) )
+    l_n_standard = (radius_throat * (math.sqrt(epsilon) - 1 \
+                    + arc_4 * ((1 / math.cos(15 * math.pi / 180)) - 1)) / math.tan(15 * math.pi / 180))
 
     # setup the 2D array containing the nozzle's coordinates
     n_steps_1 = 10
@@ -66,13 +67,13 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     nozzle_coordinates = np.zeros((total_steps, 2))
 
     # intersection points
-    y_3_start = radius_throat * beta - R_con * (1 - math.cos(theta_con * math.pi / 180))
-    x_3_end = (-radius_throat * arc_factor * math.sin(theta_con * math.pi / 180))
-    y_3_end = radius_throat * (1 + arc_factor * (1 - math.cos(theta_con * math.pi / 180)))
+    y_3_start = radius_throat * beta - r_con * (1 - math.cos(theta_con * math.pi / 180))
+    x_3_end = (-radius_throat * arc_4 * math.sin(theta_con * math.pi / 180))
+    y_3_end = radius_throat * (1 + arc_4 * (1 - math.cos(theta_con * math.pi / 180)))
     b_3 = y_3_end - math.tan(-theta_con * math.pi / 180) * x_3_end
     x_3_start = (y_3_start - b_3) / math.tan(-theta_con * math.pi / 180)
 
-    x_2_start = x_3_start - R_con * math.sin(theta_con * math.pi / 180)
+    x_2_start = x_3_start - r_con * math.sin(theta_con * math.pi / 180)
     x_1_start = x_2_start - l_ch
 
     x_6_start = radius_throat * arc_5 * math.sin(theta_n * math.pi / 180)
@@ -105,8 +106,8 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     step_2 = (start_angle_2 - end_angle_2) / n_steps_2
     theta_2 = np.arange(end_angle_2, start_angle_2, step_2)
 
-    x_2 = np.cos(theta_2) * R_con + x_2_start
-    y_2 = np.sin(theta_2) * R_con + (radius_throat * beta - R_con)
+    x_2 = np.cos(theta_2) * r_con + x_2_start
+    y_2 = np.sin(theta_2) * r_con + (radius_throat * beta - r_con)
     c2_coordinates = np.zeros((n_steps_2, 2))
 
     # Process data into a local 2d array
@@ -211,6 +212,8 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
         j = j + 1
         i = i + 1
 
+    print(nozzle_coordinates)
+    np.savetxt('rao_nozzle.csv', nozzle_coordinates, delimiter=";")
 
 
 calculate_rao_nozzle(4.3263, 4.82, 15, 50, 3.467166, 8, 5)
