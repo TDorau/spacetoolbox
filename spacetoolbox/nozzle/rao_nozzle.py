@@ -23,7 +23,7 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     Input parameters include:
         + the throat radius 'radius_throat'
         + the expansion ratio 'epsilon' (exit radius^2 / throat radius^2)
-        + the divergent inflection angle 'theta_n'  (from 12 to 18 deg)
+        + the divergent inflection angle 'theta_n'  (from 30 to 50 deg)
         + the convergent half angle 'theta' (from 20 to 45 deg)
         + the convergent arc radius factor 'arc_con' (= 1,5)
         + the divergent arc radius factor 'arc_div' (= 0.382)
