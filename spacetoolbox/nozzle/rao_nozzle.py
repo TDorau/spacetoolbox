@@ -205,6 +205,8 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     parabola_b = parabola_coefficients[1]
     parabola_c = parabola_coefficients[2]
 
+    exit_angle = np.rad2deg((math.pi / 2) - math.atan(2 * parabola_a * y_6_end + parabola_b))
+
     x_6 = parabola_a * (y_6 ** 2) + parabola_b * y_6 + parabola_c
     c6_coordinates = np.zeros((n_steps_6 + 1, 2))
 
@@ -235,4 +237,4 @@ def calculate_rao_nozzle(radius_throat, epsilon, theta_n,
     np.savetxt('rao_nozzle3D.csv', nozzle_cad, delimiter=",")
 
 
-calculate_rao_nozzle(4.3263, 4.82, 30, 50, 3.467166, 8, 5)
+calculate_rao_nozzle(4.3263, 4.82, 50, 50, 3.467166, 8, 5)
