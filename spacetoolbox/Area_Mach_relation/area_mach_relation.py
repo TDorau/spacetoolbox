@@ -111,7 +111,7 @@ def area_to_mach(x_pos, radius_local, radius_throat):
                 if i < lower_limit:
                     step_size = step_size * -0.1
         else:
-            mach_no = np.around(mach_no, decimals=5)
+            mach_no = np.around(mach_no, decimals=decimals)
             #print(mach_no)
             return mach_no
 
@@ -137,9 +137,22 @@ def nozzle_contour_to_mach(filename, radius_throat):
         contour_mach[i] = (x_nozzle[i], y_nozzle[i],local_mach)
         i = i + 1
 
+    x_mach_array = np.zeros((len(df.index), 2))
+    i = 0
+    while i < (len(df.index)):
+        x_mach_array[i] = (contour_mach[i, 0]/1000, contour_mach[i, 2])
+        i = i + 1
+    x_mach_columns = ['x', 'mach']
+    x_mach_df = pd.DataFrame(data=x_mach_array, columns=x_mach_columns)
+
+    header_xy = '(title "Mach Number")\n(labels "Position" "Mach Number")\n\n((xy/key/label "Q1D")'
+    footer_xy = '\n)'
+    np.savetxt('nozzle_Q1D_xm.xy', x_mach_df, delimiter="\t", header=header_xy, footer=footer_xy, comments='')
+
+
     # build csv file to export/return
-    np.savetxt('nozzle_contour_with_Q1D_mach_values.csv',
+    np.savetxt('nozzle_Q1D_xym.csv',
               contour_mach, delimiter=";")
 
 
-nozzle_contour_to_mach('nozzle_contour.csv', 1)
+nozzle_contour_to_mach('rao_nozzle.csv', 4.3263)
