@@ -73,7 +73,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
     y_5_end = radius_throat * math.sqrt(epsilon)
     x_5_end = (y_5_end - b_5) / math.tan(alpha * math.pi / 180)
 
-    # First curve, the chamber wall (cw) (y = beta * radius_throat)
+# First curve, the chamber wall (cw) (y = beta * radius_throat)
     x_1 = np.arange(x_1_start, x_2_start, (x_2_start - x_1_start) / n_steps_1)
     y_1 = np.ones(n_steps_1) * (beta * radius_throat)
     c1_coordinates = np.zeros((n_steps_1, 2))
@@ -91,7 +91,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         nozzle_coordinates[i] = c1_coordinates[i]
         i = i + 1
 
-    # Second curve, the convergent transition arc (cr)
+# Second curve, the convergent transition arc (cr)
     start_angle_2 = math.pi / 2
     end_angle_2 = (theta * math.pi / 180)
     step_2 = (start_angle_2 - end_angle_2) / n_steps_2
@@ -116,7 +116,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         j = j - 1
         i = i + 1
 
-    # Third curve, the converging straight diagonal (cc)
+# Third curve, the converging straight diagonal (cc)
     x_3 = np.arange(x_3_start, x_3_end, (x_3_end-x_3_start) / n_steps_3)
     y_3 = x_3 * math.tan(-theta * math.pi / 180) + b_3
     c3_coordinates = np.zeros((n_steps_3, 2))
@@ -133,7 +133,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         j = j + 1
         i = i + 1
 
-    # Fourth curve, the circular arc at the throat (ar)
+# Fourth curve, the circular arc at the throat (ar)
     start_angle_4 = -(math.pi / 2 + (theta * math.pi / 180))
     end_angle_4 = -(math.pi / 2 - alpha * math.pi / 180)
     step_4 = (end_angle_4 - start_angle_4) / n_steps_4
@@ -157,7 +157,7 @@ def calculate_conical_nozzle(radius_throat, epsilon, alpha,
         j = j + 1
         i = i + 1
 
-    # Fifth curve, the diverging straight diagonal (dc)
+# Fifth curve, the diverging straight diagonal (dc)
     step_size_5 = (x_5_end - x_5_start) / n_steps_5
     x_5 = np.arange(x_5_start, (x_5_end + step_size_5), step_size_5)
     y_5 = x_5 * math.tan(alpha * math.pi / 180) + b_5
