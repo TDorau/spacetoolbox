@@ -1,8 +1,12 @@
 import os
+import pandas as pd
 
-def calculate_representative_cell_length(file_directory):
+def calculate_representative_cell_length(file_location):
     r"""Reads a csv with volume data entries for every cell in a CFD-mesh to 
-        calculate the representative cell length according Celik et al.
+        calculate the representative cell length according Celik et al. Cell
+        volume for each cell generated from cell_volume.c UDF. Total cell
+        volume can also be derived in FLUENT -> Perform Mesh Check
+
         Format: 0.001
                 0.002
                 0.0012
@@ -15,12 +19,17 @@ def calculate_representative_cell_length(file_directory):
         file_directory (string): Directory to file (format: "C:/temp/xxx.csv")
 
     Returns:
-        representative cell length h
+        representative cell length h in m
 
     """
 
-    representative_cell_length = 1
+    df = pd.read_table(file_location, header=None,
+                               names=["cellvolume"])
+    total_cellvolume = df["cellvolume"].sum()
+    n_cells = len(df.index)
+    representative_cell_length = (1 / n_cells * total_cellvolume)** (1./3.)
 
     return representative_cell_length
+
 
 print(calculate_representative_cell_length("C:/temp/volumedata.csv"))
